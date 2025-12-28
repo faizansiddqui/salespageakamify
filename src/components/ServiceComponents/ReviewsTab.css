@@ -1,0 +1,171 @@
+.reviews-section h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #222;
+}
+
+@media (max-width: 768px) {
+    .reviews-section h2 {
+        font-size: 22px;
+    }
+}
+
+.reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .reviews {
+        gap: 15px;
+    }
+}
+
+/* Review animations */
+.review {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.review:hover {
+    background-color: #f9f9f9;
+}
+
+.review:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.review:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.review:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+/* Remove hover effects on mobile for reviews */
+@media (max-width: 768px) {
+    .review:hover {
+        background-color: transparent;
+    }
+
+    .review {
+        padding-bottom: 15px;
+    }
+}
+
+.review:last-child {
+    border-bottom: none;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+    .review-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+.review-header h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .review-header h4 {
+        font-size: 15px;
+    }
+}
+
+.country {
+    color: #666;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .country {
+        font-size: 13px;
+    }
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .review-rating {
+        flex-wrap: wrap;
+    }
+}
+
+.review-rating .date {
+    color: #666;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+    .review-rating .date {
+        font-size: 12px;
+        margin-left: 5px;
+    }
+}
+
+.review-comment {
+    margin: 0;
+    color: #444;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .review-comment {
+        font-size: 13px;
+    }
+}
+
+.star {
+    display: inline-block;
+    margin-right: 2px;
+}
+
+@media (max-width: 768px) {
+    .star {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+.star.full {
+    color: #ffc107;
+}
+
+.star.half {
+    color: #ffc107;
+}
+
+.star.empty {
+    color: #ddd;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,215 @@
+.hero-cta-section {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.hero-cta-container {
+    max-width: 1200px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 2rem 1rem;
+}
+
+.hero-cta-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* max-width: 800px; */
+    width: 100%;
+}
+
+.hero-cta-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    text-align: center;
+    width: 100%;
+}
+
+.hero-cta-heading .robot-icon {
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.hero-cta-heading span {
+    color: #ff3131;
+}
+
+.hero-cta-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25rem;
+    color: #545454;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    max-width: 600px;
+}
+
+.hero-cta-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 500px;
+}
+
+.btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    /* Updated to 12px as per requirements */
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #ff3131;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #e02a2a;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #000000;
+    border: 2px solid #ff3131;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 49, 49, 0.1);
+}
+
+.hero-cta-image-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-cta-image {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    margin-right: 0.7rem;
+}
+
+/* Tablet responsiveness */
+@media (max-width: 1024px) {
+    .hero-cta-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .hero-cta-heading {
+        font-size: 2.8rem;
+    }
+
+    .hero-cta-subtitle {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-cta-container {
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+
+    .hero-cta-heading {
+        font-size: 2.5rem;
+    }
+
+    .hero-cta-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .hero-cta-buttons {
+        flex-direction: column;
+        align-items: center;
+        max-width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .hero-cta-image {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+    .hero-cta-container {
+        padding: 1rem 0.5rem;
+        gap: 1rem;
+    }
+
+    .hero-cta-heading {
+        font-size: 2rem;
+    }
+
+    .hero-cta-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-cta-buttons {
+        gap: 0.8rem;
+    }
+
+    .btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .hero-cta-image {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+/* Small mobile responsiveness */
+@media (max-width: 360px) {
+    .hero-cta-heading {
+        font-size: 1.8rem;
+    }
+
+    .hero-cta-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+}

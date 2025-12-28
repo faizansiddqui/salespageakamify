@@ -1,0 +1,104 @@
+.faq-section {
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.faq-section h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: #62646a;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .faq-section h3 {
+        font-size: 30px;
+    }
+
+    .faq-section {
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+}
+
+.faqs {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .faqs {
+        /* gap: 15px; */
+    }
+}
+
+/* FAQ Item animations */
+.faq-item {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.faq-item:hover {
+    background-color: #f9f9f9;
+}
+
+.faq-item h3 {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 10px 0;
+}
+
+@media (max-width: 768px) {
+    .faq-item h3 {
+        padding: 0;
+        font-size: 1rem;
+        font-weight: 450;
+    }
+}
+
+.faq-item p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    padding: 10px 0;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@media (max-width: 768px) {
+    .faq-item p {
+        font-size: 0.8rem;
+        padding: 8px 0;
+    }
+}
+
+/* Remove hover effects on mobile */
+@media (max-width: 768px) {
+    .faq-item:hover {
+        background-color: transparent;
+    }
+}
+
+.faq-toggle {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.faq-toggle.expanded {
+    transform: rotate(180deg);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

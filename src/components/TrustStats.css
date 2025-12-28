@@ -1,0 +1,104 @@
+.trust-stats-section {
+    width: 100%;
+    /* Removed padding from section since spacing is handled at parent level */
+}
+
+.trust-stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    justify-items: center;
+    align-items: center;
+}
+
+.stat-card {
+    background: #ffffff;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: #000000;
+    opacity: 0.8;
+}
+
+/* Large tablet responsiveness */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Tablet responsiveness */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-card {
+        min-width: auto;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.8rem;
+    }
+
+    .stat-number {
+        font-size: 1.2rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    .stat-card {
+        padding: 1rem 0.5rem;
+    }
+}
+
+/* Small mobile responsiveness */
+@media (max-width: 360px) {
+    .stat-number {
+        font-size: 1.1rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+
+    .stat-card {
+        padding: 0.8rem 0.4rem;
+    }
+}

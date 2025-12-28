@@ -1,0 +1,406 @@
+.service-page {
+    background: #fff;
+    color: #000;
+    /* Ensure text color is black */
+    padding: 20px;
+    /* Add padding to the entire service page */
+}
+
+.page-layout {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: flex-start;
+    /* Align items to start to support sticky positioning */
+}
+
+.content-section {
+    width: 70%;
+    flex: 1;
+}
+
+.content-section h1 {
+    font-size: 2rem;
+    color: #222325;
+}
+
+.pricing-section.desktop-pricing-section {
+    width: 30%;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.mobile-pricing-section {
+    display: none;
+}
+
+/* Ensure all text elements have proper color */
+.service-page h1,
+.service-page h2,
+.service-page h4,
+.service-page h5,
+.service-page h6,
+.service-page label,
+.service-page a {
+    color: #000 !important;
+}
+
+/* Related Services Grid - 2 cards per row on all views */
+.related-services-section .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Always show 2 cards per row */
+    gap: 1rem;
+    /* Reduced gap for smaller cards */
+    grid-template-rows: auto;
+}
+
+/* Make service cards smaller */
+.service-card {
+    cursor: pointer;
+    min-height: 150px;
+    /* Reduced height */
+    padding: 15px;
+    /* Add padding inside card */
+    border: 1px solid #eee;
+    /* Add border */
+    border-radius: 8px;
+    /* Add border radius */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Add subtle transition */
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card:hover {
+    text-decoration: underline;
+    transform: translateY(-3px);
+    /* Slight lift on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* Add shadow on hover */
+}
+
+.service-card img {
+    width: 100%;
+    height: 100px;
+    /* Fixed height for consistency */
+    object-fit: cover;
+    /* Cover the area without distortion */
+    border-radius: 4px;
+    /* Rounded corners for image */
+    margin-bottom: 10px;
+}
+
+.service-card-content {
+    padding-top: 10px;
+    /* Add space between image and content */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.service-card h3 {
+    margin: 10px 0 5px 0;
+    /* Reduce margins */
+    font-size: 1rem;
+    /* Smaller font size */
+    line-height: 1.3;
+    /* Tighter line height */
+}
+
+.service-price {
+    font-size: 1.1rem;
+    /* Adjusted font size */
+    font-weight: bold;
+    color: #000;
+    margin-top: 8px;
+}
+
+/* Blog Section Grid - 2 cards per row on all views */
+.blog-section .blogs-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* Always show 2 cards per row */
+    gap: 1rem;
+    /* Reduced gap for smaller cards */
+    grid-template-rows: auto;
+}
+
+/* Make blog cards smaller */
+.blog-card {
+    cursor: pointer;
+    min-height: 250px;
+    /* Reduced height */
+    padding: 15px;
+    /* Add padding inside card */
+    border: 1px solid #eee;
+    /* Add border */
+    border-radius: 8px;
+    /* Add border radius */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Add subtle transition */
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-card:hover {
+    transform: translateY(-3px);
+    /* Slight lift on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* Add shadow on hover */
+}
+
+.blog-card img {
+    width: 100%;
+    height: 170px;
+    /* Fixed height for consistency */
+    object-fit: cover;
+    object-position: center;
+    /* Cover the area without distortion */
+    border-radius: 4px;
+    /* Rounded corners for image */
+    margin-bottom: 10px;
+}
+
+.blog-card-content {
+    padding-top: 10px;
+    /* Add space between image and content */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.blog-card h3 {
+    margin: 10px 0 5px 0;
+    /* Reduce margins */
+    font-size: 1rem;
+    /* Smaller font size */
+    line-height: 1.3;
+    /* Tighter line height */
+}
+
+.blog-excerpt {
+    font-size: 0.9rem;
+    /* Smaller font size */
+    color: #666;
+    /* Slightly muted color */
+    margin: 8px 0;
+    /* Add vertical spacing */
+    line-height: 1.4;
+    /* Readable line height */
+}
+
+.blog-meta {
+    font-size: 0.8rem;
+    /* Smaller font size */
+    color: #888;
+    /* Muted color */
+    display: flex;
+    justify-content: space-between;
+    /* Space between author and date */
+    margin-top: 8px;
+}
+
+/* Large tablet responsiveness */
+@media (max-width: 1024px) {
+    .page-layout {
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .content-section {
+        width: 65%;
+    }
+
+    .pricing-section.desktop-pricing-section {
+        width: 35%;
+    }
+
+    /* Related Services Grid - 2 cards per row on all views */
+    .related-services-section .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Tablet responsiveness */
+@media (max-width: 768px) {
+    .page-layout {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .content-section {
+        width: 100%;
+    }
+
+    .pricing-section.desktop-pricing-section {
+        width: 100%;
+        position: static;
+    }
+
+    .mobile-pricing-section {
+        display: block;
+    }
+
+    .desktop-pricing-section {
+        display: none;
+    }
+
+    /* On tablet, show 1 card per row for better readability */
+    .related-services-section .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .blog-section .blogs-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+    .page-layout {
+        padding: 0.5rem;
+        gap: 1rem;
+    }
+
+    .service-page {
+        padding: 10px;
+        /* Smaller padding on mobile */
+    }
+
+    .content-section h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Related Services Grid - 2 cards per row on all views */
+    .related-services-section .services-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .service-card {
+        cursor: pointer;
+        min-height: 120px;
+        padding: 12px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .service-card img {
+        height: 80px;
+        margin-bottom: 5px;
+    }
+
+    .service-card-content {
+        padding-top: 5px;
+    }
+
+    .service-card h3 {
+        margin: 5px 0 3px 0;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+    .service-price {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #000;
+        margin-top: 5px;
+    }
+
+    /* Blog Section Grid */
+    .blog-section .blogs-container {
+        grid-template-columns: 1fr;
+    }
+
+    .blog-card {
+        min-height: 200px;
+        padding: 12px;
+    }
+
+    .blog-card img {
+        height: 120px;
+        margin-bottom: 5px;
+    }
+
+    .blog-card-content {
+        padding-top: 5px;
+    }
+
+    .blog-card h3 {
+        margin: 5px 0 3px 0;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+    .blog-excerpt {
+        font-size: 0.8rem;
+        margin: 5px 0;
+        line-height: 1.4;
+    }
+
+    .blog-meta {
+        font-size: 0.7rem;
+        margin-top: 5px;
+    }
+}
+
+/* Small mobile responsiveness */
+@media (max-width: 360px) {
+    .page-layout {
+        padding: 0.3rem;
+        gap: 0.8rem;
+    }
+
+    .content-section h1 {
+        font-size: 1.3rem;
+    }
+
+    .related-services-section .services-grid {
+        gap: 0.6rem;
+    }
+
+    .service-card {
+        min-height: 100px;
+        padding: 10px;
+    }
+
+    .service-card img {
+        height: 60px;
+    }
+
+    .service-card h3 {
+        font-size: 0.8rem;
+    }
+
+    .service-price {
+        font-size: 0.9rem;
+    }
+
+    .blog-card {
+        min-height: 180px;
+        padding: 10px;
+    }
+
+    .blog-card img {
+        height: 100px;
+    }
+
+    .blog-card h3 {
+        font-size: 0.8rem;
+    }
+
+    .blog-excerpt {
+        font-size: 0.75rem;
+    }
+
+    .blog-meta {
+        font-size: 0.65rem;
+    }
+}

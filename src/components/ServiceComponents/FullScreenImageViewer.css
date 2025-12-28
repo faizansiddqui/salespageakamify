@@ -1,0 +1,138 @@
+/* Fullscreen Image Viewer Styles */
+.fullscreen-viewer-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.fullscreen-close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.fullscreen-close-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.fullscreen-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.fullscreen-nav-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.fullscreen-nav-button.prev {
+    left: 20px;
+}
+
+.fullscreen-nav-button.next {
+    right: 20px;
+}
+
+.fullscreen-image-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.fullscreen-image-counter {
+    position: absolute;
+    bottom: -40px;
+    color: white;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+.clickable-image {
+    cursor: pointer;
+}
+
+.clickable-image:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .fullscreen-close-button {
+        width: 40px;
+        height: 40px;
+        top: 10px;
+        right: 10px;
+    }
+
+    .fullscreen-nav-button {
+        width: 50px;
+        height: 50px;
+    }
+
+    .fullscreen-image-counter {
+        font-size: 14px;
+        padding: 4px 12px;
+        bottom: -30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .fullscreen-nav-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .fullscreen-nav-button.prev {
+        left: 10px;
+    }
+
+    .fullscreen-nav-button.next {
+        right: 10px;
+    }
+
+    .fullscreen-image-counter {
+        font-size: 12px;
+        padding: 3px 10px;
+        bottom: -25px;
+    }
+}

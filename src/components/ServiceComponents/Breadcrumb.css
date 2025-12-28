@@ -1,0 +1,27 @@
+.breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .breadcrumb {
+        font-size: 14px;
+        /* Changed from 30px to maintain better design */
+        margin-bottom: 15px;
+    }
+}
+
+.breadcrumb a {
+    color: #0073b1;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .breadcrumb a {
+        font-size: 14px;
+    }
+}

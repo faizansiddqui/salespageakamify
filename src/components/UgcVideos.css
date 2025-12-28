@@ -1,0 +1,152 @@
+.ugc-videos-section {
+  width: 100%;
+  overflow: hidden;
+}
+
+.ugc-videos-section .section-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 600;
+  padding-top: 2rem;
+  color: #333;
+}
+
+.ugc-videos-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding: 10px 20px;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.ugc-videos-container::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+.ugc-video-card {
+  flex: 0 0 auto;
+  width: 280px;
+  scroll-snap-align: start;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.ugc-video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.video-content {
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  height: 504px;
+  /* 9:16 aspect ratio (280px * 1.8) */
+  overflow: hidden;
+}
+
+.video-content video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 20px 15px 10px;
+  color: white;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.ugc-video-card:hover .video-overlay {
+  transform: translateY(0);
+}
+
+.video-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.video-creator {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.video-stats {
+  display: flex;
+  gap: 15px;
+  font-size: 0.75rem;
+}
+
+.video-stats span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.video-stats i {
+  font-size: 0.8rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .ugc-videos-section .section-title {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
+  .ugc-video-card {
+    width: 240px;
+  }
+
+  .video-content {
+    height: 432px;
+    /* 9:16 aspect ratio (240px * 1.8) */
+  }
+}
+
+@media (max-width: 480px) {
+  .ugc-video-card {
+    width: 220px;
+  }
+
+  .video-content {
+    height: 396px;
+    /* 9:16 aspect ratio (220px * 1.8) */
+  }
+
+  .video-overlay {
+    padding: 15px 10px 8px;
+  }
+}

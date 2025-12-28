@@ -1,0 +1,46 @@
+.seller-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.seller-profile {
+    background: #fff;
+}
+
+@media (max-width: 768px) {
+    .seller-info {
+        align-items: flex-start;
+        gap: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+.seller-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .seller-avatar img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.seller-details>h3 {
+    margin-top: 0.3rem;
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .seller-details>h3 {
+        font-size: 18px;
+        /* Changed from 30px to maintain better design */
+        margin-top: 0.3rem;
+    }
+}

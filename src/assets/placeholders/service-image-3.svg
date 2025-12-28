@@ -1,0 +1,5 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="400" fill="#f5f5f5" />
+  <circle cx="300" cy="200" r="100" fill="#0073b1" opacity="0.2" />
+  <text x="300" y="200" fill="#333" font-family="Arial" font-size="20" text-anchor="middle" dominant-baseline="middle">Dashboard Interface</text>
+</svg>
