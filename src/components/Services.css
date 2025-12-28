@@ -7,6 +7,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
+    padding-inline: 2rem;
 }
 
 .services-list {
@@ -22,11 +23,11 @@
     width: 100%;
 }
 
-.service-item-left {
+.service-item.left {
     flex-direction: row;
 }
 
-.service-item-right {
+.service-item.right {
     flex-direction: row-reverse;
 }
 
@@ -68,6 +69,7 @@
     color: #000000;
     margin: 0;
     line-height: 1.5;
+    text-align: left;
 }
 
 .explore-btn {
@@ -91,8 +93,8 @@
 
 .service-image {
     border-radius: 12px;
-    height: 200px;
-    width: 300px;
+    height: 60vh;
+    width: 40vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -153,31 +155,19 @@
     }
 }
 
-/* Mobile responsiveness - text first, then image for all sections */
+/* Mobile responsiveness */
 @media (max-width: 480px) {
     .services-list {
         gap: 1.5rem;
     }
 
-    .service-item {
-        flex-direction: column !important;
-        text-align: center;
-        gap: 1.5rem;
-    }
-
-    .service-item-left,
-    .service-item-right {
-        flex-direction: column !important;
-    }
-
-    .service-content {
-        align-items: center;
-    }
-
     .service-icon-title {
-        justify-content: center;
         gap: 0.3rem;
         flex-direction: column;
+    }
+
+    .service-icon {
+        font-size: 1.5rem;
     }
 
     .service-title {
