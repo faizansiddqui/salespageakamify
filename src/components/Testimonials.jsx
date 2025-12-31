@@ -1,32 +1,68 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Play, Pause, Volume2, VolumeOff, Quote } from "lucide-react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Testimonials.css";
 
 const Testimonials = () => {
+  const [playingVideo, setPlayingVideo] = useState(null);
+  const videoRefs = useRef({});
+
   const testimonials = [
     {
       name: "John Doe",
       role: "CEO, Tech Solutions",
       text: "Akamify transformed our e-commerce business with their automation solutions. Highly recommended!",
-      avatar: "/avatar1.png",
+      media: {
+        type: "video",
+        url: "/testimonial1.mp4",
+        thumbnail: "/testimonial1-thumb.jpg"
+      }
     },
     {
-      name: "Jane Smith",
+      name: "Jane Smith", 
       role: "Marketing Director, Retail Corp",
       text: "Outstanding customer support and innovative solutions. They truly understand our business needs.",
-      avatar: "/avatar2.png",
+      media: {
+        type: "image",
+        url: "/testimonial2.jpg"
+      }
     },
     {
       name: "Mike Johnson",
-      role: "Founder, Startup Inc",
+      role: "Founder, Startup Inc", 
       text: "The automation tools have saved us countless hours and increased our conversion rates significantly.",
-      avatar: "/avatar3.png",
+      media: {
+        type: "video",
+        url: "/testimonial3.mp4", 
+        thumbnail: "/testimonial3-thumb.jpg"
+      }
     },
   ];
+
+  const handleVideoClick = (index) => {
+    const videoElement = videoRefs.current[index];
+    if (!videoElement) return;
+
+    if (playingVideo === index) {
+      videoElement.pause();
+      setPlayingVideo(null);
+    } else {
+      // Pause any currently playing video
+      if (playingVideo !== null && videoRefs.current[playingVideo]) {
+        videoRefs.current[playingVideo].pause();
+      }
+      
+      videoElement.play()
+        .then(() => {
+          setPlayingVideo(index);
+        })
+        .catch(e => console.log("Autoplay prevented:", e));
+    }
+  };
 
   return (
     <section className="testimonials-section">
@@ -38,7 +74,7 @@ const Testimonials = () => {
           slidesPerView={1}
           navigation
           pagination={{ clickable: true }}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
           loop={true}
           breakpoints={{
             640: {
@@ -56,16 +92,43 @@ const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <SwiperSlide key={index} className="testimonial-slide">
               <div className="testimonial-card">
-                <div className="avatar-placeholder">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="avatar-image"
-                  />
+                <div className="testimonial-media">
+                  {testimonial.media.type === "video" ? (
+                    <>
+                      <video
+                        ref={el => videoRefs.current[index] = el}
+                        src={testimonial.media.url}
+                        poster={testimonial.media.thumbnail}
+                        onClick={() => handleVideoClick(index)}
+                        loop
+                        playsInline
+                        autoplay
+                        muted
+                        className="testimonial-video"
+                      />
+                      <div className={`video-overlay ${playingVideo === index ? 'hidden' : ''}`} onClick={() => handleVideoClick(index)}>
+                        <div className="play-icon">
+                          {/* <Play size={24} color="#fff" /> */}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <img
+                      src={testimonial.media.url}
+                      alt={`${testimonial.name} testimonial`}
+                      className="testimonial-image"
+                    />
+                  )}
                 </div>
-                <h3 className="testimonial-name">{testimonial.name}</h3>
-                <p className="testimonial-role">{testimonial.role}</p>
-                <p className="testimonial-text">{testimonial.text}</p>
+                
+                <div className="testimonial-content">
+                  <h3 className="testimonial-name">{testimonial.name}</h3>
+                  <p className="testimonial-role">{testimonial.role}</p>
+                  <p className="testimonial-text">"{testimonial.text}"</p>
+                  <div className="quote-icon">
+                    <Quote size={24} color="#d1d5db" />
+                  </div>
+                </div>
               </div>
             </SwiperSlide>
           ))}

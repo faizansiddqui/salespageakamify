@@ -59,6 +59,8 @@
     position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    background-color: #fff;
 }
 
 .video-element {
@@ -80,10 +82,12 @@
     gap: 10px;
     opacity: 0;
     transition: opacity 0.3s ease;
+    margin-bottom: 1rem;
 }
 
 .video-container:hover .video-controls {
     opacity: 1;
+    margin-bottom: 1rem;
 }
 
 .progress-container {
@@ -139,8 +143,8 @@
 }
 
 .playback-rate-selector select {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: #fff;
+    color: #000;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px;
     padding: 5px 8px;

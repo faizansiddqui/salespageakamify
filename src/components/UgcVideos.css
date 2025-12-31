@@ -1,6 +1,7 @@
 .ugc-videos-section {
   width: 100%;
   overflow: hidden;
+  padding-top: 2rem;
 }
 
 .ugc-videos-section .section-title {
@@ -24,7 +25,7 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   gap: 20px;
-  padding: 10px 20px;
+  margin: 10px 20px;
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
@@ -36,40 +37,49 @@
   /* Chrome, Safari, Opera */
 }
 
-.ugc-nav-button {
+.ugc-videos-wrapper > svg:first-child {
   position: absolute;
   top: 50%;
+  left: 0;
   transform: translateY(-50%);
-  width: 35px;
-  height: 60px;
-  margin-inline: 0.5rem;
-  background: rgba(255, 255, 255, 0.9);
+  width: 30px;
+  color: #fff;
+  height: 30px;
+  margin-left: 0.5rem;
+  /* background: #8c8b8b; */
   border: 1px solid #ddd;
   border-radius: 50%;
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
+  padding: 15px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 10;
   transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.ugc-nav-button:hover {
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-50%) scale(1.1);
-}
-
-.ugc-nav-prev {
-  left: 0;
-}
-
-.ugc-nav-next {
+.ugc-videos-wrapper > svg:last-child {
+  position: absolute;
+  top: 50%;
   right: 0;
+  transform: translateY(-50%);
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  margin-right: 0.5rem;
+  /* background: #8c8b8b; */
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  padding: 15px;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ugc-videos-wrapper > svg:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .ugc-video-card {
@@ -196,6 +206,7 @@
 .video-creator {
   font-size: 0.8rem;
   opacity: 0.9;
+  color: #fff;
   /* margin-bottom: 8px; */
   text-align: left;
 }
@@ -218,19 +229,25 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .ugc-videos-container{
+    margin: 5px;
+  }
+
+  .ugc-videos-section{
+    margin-top: 1rem;
+  }
+
   .ugc-videos-section .section-title {
     font-size: 1.6rem;
     margin-bottom: 20px;
+    color: #000;
   }
 
-  .ugc-videos-wrapper {
-    padding: 0 50px;
-  }
-
-  .ugc-nav-button {
-    width: 40px;
-    height: 45px;
-    font-size: 20px;
+  .ugc-videos-wrapper > svg:first-child,
+  .ugc-videos-wrapper > svg:last-child {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
   }
 
   .ugc-video-card {
@@ -256,14 +273,11 @@
 }
 
 @media (max-width: 480px) {
-  .ugc-videos-wrapper {
-    padding: 0 40px;
-  }
-
-  .ugc-nav-button {
-    width: 35px;
-    height: 45px;
-    font-size: 18px;
+  .ugc-videos-wrapper > svg:first-child,
+  .ugc-videos-wrapper > svg:last-child {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
   }
 
   .ugc-video-card {
