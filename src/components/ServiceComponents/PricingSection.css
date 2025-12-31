@@ -1,5 +1,4 @@
 .package-selector {
-    margin-top: 40px;
     flex: 1;
     position: static;
     width: 28vw;
@@ -180,6 +179,7 @@
 .select-button {
     width: 100%;
     padding: 12px;
+    background-color: #000;
     color: white;
     border: none;
     border-radius: 4px;
@@ -198,7 +198,7 @@
 }
 
 .select-button:hover {
-    background-color: #005a87;
+    background-color: #404145;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }

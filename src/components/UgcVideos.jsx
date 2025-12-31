@@ -5,6 +5,7 @@ import './UgcVideos.css';
 const UgcVideos = ({ videos = [] }) => {
   const [playingVideo, setPlayingVideo] = useState(null);
   const videoRefs = useRef({});
+  const containerRef = useRef(null);
 
   useEffect(() => {
     // Clean up when component unmounts
@@ -40,31 +41,59 @@ const UgcVideos = ({ videos = [] }) => {
     }
   };
 
+  const scrollLeft = () => {
+    const container = containerRef.current;
+    if (container) {
+      container.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    const container = containerRef.current;
+    if (container) {
+      container.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
 
   return (
     <section className="ugc-videos-section">
       <h2 className="section-title">User Generated Content</h2>
-      <div className="ugc-videos-container">
-        {videos.map((video, index) => (
-          <div key={video.id} className="ugc-video-card">
-            <div className="video-content">
-              <video
-                ref={el => videoRefs.current[index] = el}
-                id={`video-${index}`}
-                src={video.videoUrl}
-                poster={video.thumbnail}
-                onClick={() => handleVideoClick(index)}
-                loop
-                playsInline
-                // muted // Add muted attribute for better autoplay compatibility
-              />
-              <div className="video-overlay">
-                <h3 className="video-title">{video.title}</h3>
-                <p className="video-creator">By {video.creator}</p>
+      <div className="ugc-videos-wrapper">
+        <button className="ugc-nav-button ugc-nav-prev" onClick={scrollLeft}>
+          ‹
+        </button>
+        <div className="ugc-videos-container" ref={containerRef}>
+          {videos.map((video, index) => (
+            <div key={video.id} className="ugc-video-card">
+              <div className="video-content">
+                <video
+                  ref={el => videoRefs.current[index] = el}
+                  id={`video-${index}`}
+                  src={video.videoUrl}
+                  poster={video.thumbnail}
+                  onClick={() => handleVideoClick(index)}
+                  loop
+                  playsInline
+                  // muted // Add muted attribute for better autoplay compatibility
+                />
+                
+                {/* Video play overlay with play icon */}
+                <div className={`video-play-overlay ${playingVideo === index ? 'hidden' : ''}`} onClick={() => handleVideoClick(index)}>
+                  <div className="ugc-play-icon"></div>
+                </div>
+                
+                <div className="video-text-overlay">
+                  <h3 className="video-title">{video.title}</h3>
+                  <p className="video-creator">By {video.creator}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <button className="ugc-nav-button ugc-nav-next" onClick={scrollRight}>
+          ›
+        </button>
       </div>
     </section>
   );

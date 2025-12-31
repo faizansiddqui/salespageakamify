@@ -6,7 +6,7 @@
 }
 
 .why-akamify-container {
-    max-width: 800px;
+    /* max-width: 800px; */
     margin: 0 auto;
     padding: 0 1rem;
 }
@@ -16,7 +16,7 @@
     font-size: 2.5rem;
     font-weight: 700;
     color: #000000;
-    margin-bottom: 1rem;
+    /* margin-bottom: 1rem; */
 }
 
 .why-akamify-heading .highlight {
@@ -25,13 +25,15 @@
 
 .why-akamify-subtext {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1rem;
+    opacity: 0.8;
     color: #000000;
     margin: 0;
     line-height: 1.5;
-    max-width: 600px;
+    margin-bottom: 1rem;
     margin-left: auto;
     margin-right: auto;
+
 }
 
 /* Tablet responsiveness */

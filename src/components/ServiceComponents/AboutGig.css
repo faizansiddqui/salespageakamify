@@ -109,6 +109,8 @@
 .policy-note {
     padding-inline: 10px;
     border: 1px solid #999aa0;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .policy-span {
@@ -142,6 +144,10 @@
         width: 100%;
     }
 
+    .tab-content{
+        margin-top: 1rem;
+    }
+
     .website-type {
         width: 100%;
     }
@@ -171,7 +177,7 @@
     .profile-details {
         flex-direction: column;
         gap: 10px;
-        text-align: center;
+        text-align: left;
     }
 
     .profile-details img {

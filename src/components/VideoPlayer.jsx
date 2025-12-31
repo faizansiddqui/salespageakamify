@@ -114,6 +114,12 @@ const VideoPlayer = () => {
           />
           Your browser does not support the video tag.
         </video>
+        
+        {/* Video overlay with play icon */}
+        <div className={`video-overlay ${isPlaying ? 'hidden' : ''}`} onClick={handleVideoClick}>
+          <div className="play-icon"></div>
+        </div>
+        
         <div className="video-controls">
           <div className="progress-container" onClick={handleSeek}>
             <div className="progress-bar" ref={progressBarRef}>

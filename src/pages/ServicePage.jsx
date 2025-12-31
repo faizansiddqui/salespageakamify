@@ -40,7 +40,7 @@ const ServicePage = () => {
     );
 
     const hiddenElements = document.querySelectorAll(
-      ".service-card, .blog-card"
+      ".service-card, .blog-cards"
     );
     hiddenElements.forEach((el) => observer.observe(el));
 
@@ -109,9 +109,9 @@ const ServicePage = () => {
                 <h2>Related Blog Posts</h2>
                 <div className="blogs-container">
                   {serviceData.blogs.map((blog) => (
-                    <div key={blog.id} className="blog-card">
+                    <div key={blog.id} className="blog-cards">
                       <img src={blog.image} alt={blog.title} />
-                      <div className="blog-card-content">
+                      <div className="blog-cards-content">
                         <h3>{blog.title}</h3>
                         <p className="blog-excerpt">{blog.excerpt}</p>
                         <div className="blog-meta">
