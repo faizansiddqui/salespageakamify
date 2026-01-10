@@ -190,20 +190,14 @@ const sendVercelNodemailerEmail = async (to, subject, html) => {
         to,
         subject,
         html,
-        smtpConfig: {
-          host: import.meta.env.VITE_SMTP_HOST,
-          port: parseInt(import.meta.env.VITE_SMTP_PORT) || 587,
-          secure: import.meta.env.VITE_SMTP_SECURE === 'true',
-          auth: {
-            user: import.meta.env.VITE_SMTP_USER,
-            pass: import.meta.env.VITE_SMTP_PASS
-          }
-        },
         from: import.meta.env.VITE_EMAIL_FROM || 'noreply@akamify.com'
       })
     });
 
-    const result = await response.json();
+    const contentType = response.headers.get('content-type') || '';
+    const result = contentType.includes('application/json')
+      ? await response.json()
+      : { success: false, error: await response.text() };
     
     if (!response.ok || !result.success) {
       throw new Error(result.error || result.message || 'Failed to send email via Vercel Nodemailer');
