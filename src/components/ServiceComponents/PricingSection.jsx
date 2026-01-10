@@ -35,7 +35,7 @@ const PricingSection = ({
     },
   };
 
-  const [showFeatures, setShowFeatures] = useState(true);
+  const [showFeatures, setShowFeatures] = useState(false);
 
   const toggleFeatures = () => {
     setShowFeatures(!showFeatures);
