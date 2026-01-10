@@ -1,1 +1,1 @@
-{"functions": {"api/*.js": {"runtime": "nodejs18.x"}}, "rewrites": [{"source": "/api/(.*)", "destination": "/api/$1"}], "env": {"VITE_SMTP_HOST": "@smtp_host", "VITE_SMTP_PORT": "@smtp_port", "VITE_SMTP_SECURE": "@smtp_secure", "VITE_SMTP_USER": "@smtp_user", "VITE_SMTP_PASS": "@smtp_pass", "VITE_EMAIL_FROM": "@email_from"}}
+{"functions": {"api/*.js": {"runtime": "nodejs18.x"}}, "rewrites": [{"source": "/api/(.*)", "destination": "/api/$1"}]}
