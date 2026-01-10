@@ -14,26 +14,26 @@ const emailTemplates = {
         <div style="background: white; padding: 20px; border: 1px solid #e1e5e9; border-radius: 0 0 10px 10px;">
           <h2 style="color: #2c3e50; margin-bottom: 20px;">Enrollment Details</h2>
           
-          <div style="display: grid; gap: 25px;">
-            <div style="padding: 5px; background: #f8f9fa; border-radius: 8px;">
+          <div style="display: grid; gap: 25px; border-radius: 8px;">
+            <div style="padding: 15px; background: #f8f9fa;">
               <strong style="color: #667eea;">Name:</strong> ${bookingData.name}
             </div>
-            <div style="padding: 5px; background: #f8f9fa; border-radius: 8px;">
+            <div style="padding: 15px; background: #f8f9fa;">
               <strong style="color: #667eea;">Email:</strong> ${bookingData.email}
             </div>
-            <div style="padding: 5px; background: #f8f9fa; border-radius: 8px;">
+            <div style="padding: 15px; background: #f8f9fa;">
               <strong style="color: #667eea;">Phone:</strong> ${bookingData.phone}
             </div>
-            <div style="padding: 5px; background: #f8f9fa; border-radius: 8px;">
+            <div style="padding: 15px; background: #f8f9fa;">
               <strong style="color: #667eea;">Business:</strong> ${bookingData.business}
             </div>
-            <div style="padding: 5px; background: #f8f9fa; border-radius: 8px;">
+            <div style="padding: 15px; background: #f8f9fa;">
               <strong style="color: #667eea;">Scheduled Date:</strong> ${new Date(bookingData.date).toLocaleDateString()}
             </div>
-            <div style="padding: 5px; background: #f8f9fa; border-radius: 8px;">
+            <div style="padding: 15px; background: #f8f9fa;">
               <strong style="color: #667eea;">Transaction ID:</strong> ${bookingData.transactionId}
             </div>
-            <div style="padding: 5px; background: #f8f9fa; border-radius: 8px;">
+            <div style="padding: 15px; background: #f8f9fa;">
               <strong style="color: #667eea;">Amount Paid:</strong> ₹${bookingData.amount}
             </div>
           </div>
