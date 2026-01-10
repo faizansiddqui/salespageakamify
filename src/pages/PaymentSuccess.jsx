@@ -36,7 +36,6 @@ const PaymentSuccess = () => {
           amount: '99'
         });
         await sendEmail(bookingInfo.email, emailTemplate.subject, emailTemplate);
-        console.log('Success email sent to:', bookingInfo.email);
       }
     } catch (error) {
       console.error('Error sending success email:', error);

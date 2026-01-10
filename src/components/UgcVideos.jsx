@@ -37,7 +37,7 @@ const UgcVideos = ({ videos = [] }) => {
         .then(() => {
           setPlayingVideo(index);
         })
-        .catch(e => console.log("Autoplay prevented:", e));
+        .catch(() => {});
     }
   };
 

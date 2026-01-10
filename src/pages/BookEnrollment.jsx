@@ -92,7 +92,6 @@ const BookEnrollment = () => {
           description: 'Security Deposit for Demo Booking',
           // Remove image to avoid CORS issues in development
           handler: async function (response) {
-            console.log('=== RAZORPAY HANDLER TRIGGERED ===');
             await handlePaymentSuccess(response);
           },
           prefill: {
@@ -105,7 +104,6 @@ const BookEnrollment = () => {
           },
           modal: {
             ondismiss: function () {
-              console.log('Payment modal dismissed');
               setIsSubmitting(false);
             },
             escape: false,
@@ -138,13 +136,9 @@ const BookEnrollment = () => {
   };
 
   const handlePaymentSuccess = async (response) => {
-    console.log('=== PAYMENT SUCCESS HANDLER CALLED ===');
-    console.log('Payment response:', response);
-    
     try {
       // For development, skip verification to avoid CORS issues
       // In production, you should verify the payment on your backend
-      console.log('Payment successful:', response);
 
       // Save booking data to Realtime Database
       const bookingData = {
@@ -155,30 +149,18 @@ const BookEnrollment = () => {
         createdAt: new Date().toISOString(),
         paymentStatus: 'captured'
       };
-
-      console.log('Form data:', formData);
-      console.log('Complete booking data to save:', bookingData);
-      console.log('Saving booking data...');
       
       try {
         // Create a new reference in the 'bookings' node
         const bookingsRef = ref(db, 'bookings');
-        console.log('Database reference created:', bookingsRef);
         
         const newBookingRef = push(bookingsRef);
-        console.log('New booking reference:', newBookingRef);
         
         await set(newBookingRef, bookingData);
-        console.log('✅ Booking saved successfully with ID:', newBookingRef.key);
         
         // Verify it was saved by trying to read it back
         const savedRef = ref(db, `bookings/${newBookingRef.key}`);
         const snapshot = await get(savedRef);
-        if (snapshot.exists()) {
-          console.log('✅ Verified: Data exists in database');
-        } else {
-          console.log('❌ Error: Data not found in database after save');
-        }
         
       } catch (firebaseError) {
         console.error('❌ Firebase save error:', firebaseError);
@@ -190,13 +172,8 @@ const BookEnrollment = () => {
       // Store data in localStorage for success page
       localStorage.setItem('bookingData', JSON.stringify(bookingData));
       localStorage.setItem('transactionId', response.razorpay_payment_id);
-      console.log('✅ Data stored in localStorage');
-
-      // Skip email for now to prevent hanging - handle it separately
-      console.log('Skipping email send to prevent hanging');
       
       // Redirect immediately
-      console.log('Redirecting to success page...');
       navigate(`/payment-success?transaction_id=${response.razorpay_payment_id}`);
       
     } catch (error) {

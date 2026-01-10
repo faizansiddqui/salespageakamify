@@ -56,11 +56,17 @@ const Testimonials = () => {
         videoRefs.current[playingVideo].pause();
       }
       
-      videoElement.play()
-        .then(() => {
-          setPlayingVideo(index);
-        })
-        .catch(e => console.log("Autoplay prevented:", e));
+      const playVideo = (index) => {
+        if (videoRefs.current[index]) {
+          videoRefs.current[index].play()
+            .then(() => {
+              setPlayingVideo(index);
+            })
+            .catch(() => {});
+        }
+      };
+
+      playVideo(index);
     }
   };
 
