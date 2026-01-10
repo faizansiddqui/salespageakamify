@@ -116,6 +116,17 @@ const BookEnrollment = () => {
         // Add error handling
         razorpay.on('payment.failed', function (response) {
           console.error('Payment failed:', response.error);
+          try {
+            localStorage.setItem('failedPaymentId', response?.error?.metadata?.payment_id || response?.error?.metadata?.order_id || String(Date.now()));
+            localStorage.setItem('failedBookingData', JSON.stringify({
+              ...formData,
+              status: 'failed',
+              createdAt: new Date().toISOString(),
+              paymentStatus: 'failed'
+            }));
+          } catch (e) {
+            console.error('Failed to store failed booking context:', e);
+          }
           setIsSubmitting(false);
           navigate('/payment-failed');
         });

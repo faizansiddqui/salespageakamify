@@ -16,6 +16,8 @@ const PaymentSuccess = () => {
 
     if (txId) {
       setTransactionId(txId);
+      localStorage.removeItem('failedPaymentId');
+      localStorage.removeItem('failedBookingData');
     }
 
     if (booking) {
@@ -23,7 +25,12 @@ const PaymentSuccess = () => {
       setBookingData(parsedBookingData);
       
       // Send success email after booking data is set
-      sendSuccessEmail(parsedBookingData, txId);
+      if (txId) {
+        const sentKey = `emailSent_success_${txId}`;
+        if (localStorage.getItem(sentKey) !== 'true') {
+          sendSuccessEmail(parsedBookingData, txId);
+        }
+      }
     }
   }, []);
 
@@ -36,6 +43,7 @@ const PaymentSuccess = () => {
           amount: '99'
         });
         await sendEmail(bookingInfo.email, emailTemplate.subject, emailTemplate);
+        localStorage.setItem(`emailSent_success_${txId}`, 'true');
       }
     } catch (error) {
       console.error('Error sending success email:', error);

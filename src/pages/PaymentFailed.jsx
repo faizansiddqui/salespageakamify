@@ -14,11 +14,22 @@ const PaymentFailed = () => {
 
   const sendFailedEmail = async () => {
     try {
-      const bookingData = JSON.parse(localStorage.getItem('bookingData') || '{}');
-      
-      if (bookingData.email) {
-        const emailTemplate = emailTemplates.paymentFailed(bookingData);
-        await sendEmail(bookingData.email, emailTemplate.subject, emailTemplate);
+      const failedPaymentId = localStorage.getItem('failedPaymentId');
+      const failedBookingData = JSON.parse(localStorage.getItem('failedBookingData') || '{}');
+
+      if (!failedPaymentId) {
+        return;
+      }
+
+      const sentKey = `emailSent_failed_${failedPaymentId}`;
+      if (localStorage.getItem(sentKey) === 'true') {
+        return;
+      }
+
+      if (failedBookingData.email) {
+        const emailTemplate = emailTemplates.paymentFailed(failedBookingData);
+        await sendEmail(failedBookingData.email, emailTemplate.subject, emailTemplate);
+        localStorage.setItem(sentKey, 'true');
       }
     } catch (error) {
       console.error('Error sending failed payment email:', error);
