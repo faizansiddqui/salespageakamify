@@ -1,7 +1,18 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./HeroCta.css";
 
 const HeroCta = () => {
+  const navigate = useNavigate();
+
+  const handleViewDemo = () => {
+    navigate('/view-demo');
+  };
+
+  const handleBookEnquiry = () => {
+    navigate('/book-enrollment');
+  };
+
   return (
     <section className="hero-cta-section">
       <div className="hero-cta-container">
@@ -16,8 +27,8 @@ const HeroCta = () => {
             Your all tech needs completed here.
           </p>
           <div className="hero-cta-buttons">
-            <button className="btn btn-primary">Join Live Demo</button>
-            <button className="btn btn-secondary">Book Enquiry</button>
+            <button className="btn btn-primary" onClick={handleViewDemo}>View Demo</button>
+            <button className="btn btn-secondary" onClick={handleBookEnquiry}>Book Enrollment</button>
           </div>
         </div>
         <div className="hero-cta-image-container">

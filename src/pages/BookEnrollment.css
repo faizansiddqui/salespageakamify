@@ -1,0 +1,393 @@
+.book-enrollment-page {
+  padding: 60px 0;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  min-height: 100vh;
+}
+
+.enrollment-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.enrollment-header {
+  text-align: center;
+  margin-bottom: 50px;
+  color: black;
+}
+
+.enrollment-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.enrollment-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.enrollment-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.form-section {
+  background: white;
+  color: black;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.enrollment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input.error {
+  border-color: #e74c3c;
+  background: #fdf2f2;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.terms-section {
+  margin: 20px 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkmark {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.checkbox-label input[type="checkbox"].error+.checkmark {
+  border-color: #e74c3c;
+}
+
+.security-info {
+  /* background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); */
+  border-radius: 15px;
+  /* padding: 25px; */
+  /* margin: 30px 0; */
+  color: black;
+}
+
+.security-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-bottom: 15px; */
+}
+
+.amount-label {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.amount {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.refund-info-book {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  opacity: 0.9;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+}
+
+.proceed-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.proceed-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.proceed-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  order: 2;
+}
+
+.info-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.info-card h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+.info-card ul,
+.info-card ol {
+  text-align: left;
+  list-style: none;
+  padding: 0;
+}
+
+.info-card li {
+  padding: 10px 0;
+  color: #666;
+  position: relative;
+  padding-left: 25px;
+  line-height: 1.5;
+}
+
+.info-card li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.info-card ol li::before {
+  content: counter(list-item);
+  position: absolute;
+  left: 0;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.faq-section {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.faq-section h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 40px;
+  margin-top: 40px;
+  font-size: 2rem;
+}
+
+.faq-list {
+  padding-inline: 2rem;
+  display: grid;
+  gap: 25px;
+}
+
+.faq-item {
+  border: 1px solid #e1e5e9;
+  border-radius: 12px;
+  padding: 0;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.faq-question:hover {
+  background: #e9ecef;
+}
+
+.faq-question h4 {
+  padding-inline: 1rem;
+  color: #2c3e50;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.faq-icon {
+  padding-inline: 1rem;
+  color: #667eea;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  background: white;
+}
+
+.faq-answer.expanded {
+  max-height: 200px;
+  padding: 20px 25px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.faq-answer p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .enrollment-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .info-section {
+    order: 2;
+    /* Move to bottom on tablet and mobile */
+  }
+
+  .enrollment-header h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .book-enrollment-page {
+    padding: 40px 0;
+  }
+
+  .form-section {
+    padding: 25px;
+  }
+
+  .enrollment-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .faq-section {
+    /* padding: 30px 20px; */
+  }
+
+  .faq-list {
+    padding-inline: 0;
+  }
+
+  .refund-info-book {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    padding: 1rem 1.5rem;
+  }
+
+  .security-amount {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .proceed-btn {
+    margin: 0;
+  }
+
+  .amount {
+    font-size: 1.5rem;
+  }
+}

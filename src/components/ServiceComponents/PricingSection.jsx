@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Clock, RotateCcw, ChevronDown, ArrowRight } from "lucide-react";
+import { Clock, RotateCcw, ChevronDown, ArrowRight, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "./PricingSection.css";
 
 const PricingSection = ({
@@ -8,6 +9,8 @@ const PricingSection = ({
   price,
   features,
 }) => {
+  const navigate = useNavigate();
+
   // Define delivery time and revisions for each package
   const packageDetails = {
     basic: {
@@ -36,6 +39,10 @@ const PricingSection = ({
 
   const toggleFeatures = () => {
     setShowFeatures(!showFeatures);
+  };
+
+  const handleBookEnrollment = () => {
+    navigate('/book-enrollment');
   };
 
   return (
@@ -98,8 +105,12 @@ const PricingSection = ({
               ))}
             </ul>
           )}
-          <button className="select-button">
-            <div>Continue</div>
+          <button className="select-button" onClick={handleBookEnrollment}>
+            <div>Book Enrollment</div>
+            <Calendar className="arrow-right" />
+          </button>
+          <button className="select-button" onClick={handleBookEnrollment}>
+            <div>View Demo</div>
             <ArrowRight className="arrow-right" />
           </button>
         </div>

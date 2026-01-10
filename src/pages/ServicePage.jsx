@@ -10,11 +10,14 @@ import FaqTab from "../components/ServiceComponents/FaqTab";
 import ReviewsTab from "../components/ServiceComponents/ReviewsTab";
 import PricingSection from "../components/ServiceComponents/PricingSection";
 import AboutGig from "../components/ServiceComponents/AboutGig";
+import { Calendar, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "../components/ResponsiveUtils.css";
 
 const ServicePage = () => {
   const [selectedPackage, setSelectedPackage] = useState("standard");
   const [imageIndex, setImageIndex] = useState(0);
+  const navigate = useNavigate();
 
   const handlePackageSelect = (pkg) => {
     setSelectedPackage(pkg);
@@ -53,7 +56,8 @@ const ServicePage = () => {
     <>
       {/* <Navigation /> */}
       <div className="service-page">
-        <div className="container">
+        <div className="service-container">
+
           {/* <Breadcrumb /> */}
 
           <div className="page-layout">

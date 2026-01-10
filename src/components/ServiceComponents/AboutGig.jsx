@@ -1,7 +1,19 @@
 import React from "react";
+import { Calendar, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "./AboutGig.css";
 
 const AboutGig = () => {
+  const navigate = useNavigate();
+
+  const handleBookEnrollment = () => {
+    navigate('/book-enrollment');
+  };
+
+  const handleViewDemo = () => {
+    navigate('/view-demo');
+  };
+
   return (
     <div className="about-gig-content">
       <p>
@@ -59,7 +71,16 @@ const AboutGig = () => {
               <span className="sqt">Akamify</span>
             </p>
           </div>
-          <button className="profile-button">Contact me</button>
+          <div className="profile-buttons">
+            <button className="profile-button" onClick={handleBookEnrollment}>
+              <Calendar />
+              Book Enrollment
+            </button>
+            <button className="profile-button" onClick={handleViewDemo}>
+              <Eye />
+              View Demo
+            </button>
+          </div>
         </div>
         <div className="about">
           <div className="hgt">
