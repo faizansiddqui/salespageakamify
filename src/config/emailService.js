@@ -203,11 +203,13 @@ const sendVercelNodemailerEmail = async (to, subject, html) => {
       })
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to send email via Vercel Nodemailer');
+    const result = await response.json();
+    
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || result.message || 'Failed to send email via Vercel Nodemailer');
     }
 
-    return await response.json();
+    return result;
   } catch (error) {
     console.error('Vercel Nodemailer email error:', error);
     throw error;
@@ -219,28 +221,11 @@ const sendEmail = async (to, subject, templateData) => {
   const html = templateData.html || templateData;
   
   try {
-    // Try Vercel Functions first
+    // Send email via Vercel Functions
     return await sendVercelNodemailerEmail(to, subject, html);
   } catch (error) {
-    console.warn('Vercel Nodemailer failed, using fallback:', error.message);
-    
-    // Fallback - console logging for development
-    if (import.meta.env.DEV) {
-      console.log('=== EMAIL SENT (DEVELOPMENT FALLBACK) ===');
-      console.log('To:', to);
-      console.log('Subject:', subject);
-      console.log('HTML:', html);
-      console.log('SMTP Config:', {
-        host: import.meta.env.VITE_SMTP_HOST,
-        port: import.meta.env.VITE_SMTP_PORT,
-        secure: import.meta.env.VITE_SMTP_SECURE,
-        user: import.meta.env.VITE_SMTP_USER
-      });
-      console.log('=========================================');
-      return { success: true, message: 'Email logged in development mode' };
-    }
-
-    throw new Error('Email sending failed');
+    console.error('Email sending failed:', error);
+    throw error;
   }
 };
 

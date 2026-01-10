@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     }
 
     // Create Nodemailer transporter with your SMTP config
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port || 587,
       secure: smtpConfig.secure || false, // true for 465, false for other ports

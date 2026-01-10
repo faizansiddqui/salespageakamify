@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Check, Copy, Mail, Calendar, User, Phone, Building, ArrowRight, Home } from 'lucide-react';
+import { sendEmail, emailTemplates } from '../config/emailService';
 import './PaymentSuccess.css';
 
 const PaymentSuccess = () => {
@@ -18,19 +19,27 @@ const PaymentSuccess = () => {
     }
 
     if (booking) {
-      setBookingData(JSON.parse(booking));
+      const parsedBookingData = JSON.parse(booking);
+      setBookingData(parsedBookingData);
+      
+      // Send success email after booking data is set
+      sendSuccessEmail(parsedBookingData, txId);
     }
-
-    // Send success email
-    sendSuccessEmail();
   }, []);
 
-  const sendSuccessEmail = async () => {
+  const sendSuccessEmail = async (bookingInfo, txId) => {
     try {
-      // EmailJS integration will be added here
-      console.log('Success email sent');
+      if (bookingInfo && bookingInfo.email) {
+        const emailTemplate = emailTemplates.bookingConfirmation({
+          ...bookingInfo,
+          transactionId: txId,
+          amount: '99'
+        });
+        await sendEmail(bookingInfo.email, emailTemplate.subject, emailTemplate);
+        console.log('Success email sent to:', bookingInfo.email);
+      }
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error('Error sending success email:', error);
     }
   };
 
