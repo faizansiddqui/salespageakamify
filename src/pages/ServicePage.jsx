@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
-import serviceData from "../data";
-// import Navigation from "../components/Navigation";
-import Breadcrumb from "../components/ServiceComponents/Breadcrumb";
+import { useNavigate } from "react-router-dom";
+
 import SellerInfo from "../components/ServiceComponents/SellerInfo";
 import ImageGallery from "../components/ServiceComponents/ImageGallery";
-import Tabs from "../components/ServiceComponents/Tabs";
-import DescriptionTab from "../components/ServiceComponents/DescriptionTab";
-import FaqTab from "../components/ServiceComponents/FaqTab";
-import ReviewsTab from "../components/ServiceComponents/ReviewsTab";
 import PricingSection from "../components/ServiceComponents/PricingSection";
 import AboutGig from "../components/ServiceComponents/AboutGig";
-import { Calendar, Eye } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import "../components/ResponsiveUtils.css";
+import RelatedServices from "../components/RelatedServices";
+import ReviewSection from "../components/ReviewsList";
+import FaqTab from "../components/ServiceComponents/FaqTab";
+
+import serviceData from "../data";
 
 const ServicePage = () => {
   const [selectedPackage, setSelectedPackage] = useState("standard");
@@ -58,22 +55,25 @@ const ServicePage = () => {
       <div className="service-page">
         <div className="service-container">
 
-          {/* <Breadcrumb /> */}
 
           <div className="page-layout">
             {/* Left Column - Content Section */}
             <div className="content-section">
-              <h1>{serviceData.title}</h1>
+
+              <h1 className="mb-6">{serviceData.title}</h1>
 
               <SellerInfo seller={serviceData.seller} />
 
-              <ImageGallery
-                images={serviceData.images}
-                imageIndex={imageIndex}
-                onImageClick={handleImageClick}
-              />
+              <div className="mb-10">
+                <ImageGallery
+                  images={serviceData.images}
+                  imageIndex={imageIndex}
+                  onImageClick={handleImageClick}
+                />
+              </div>
 
-              {/* Pricing section moved here for mobile view */}
+
+
               <div className="mobile-pricing-section">
                 <PricingSection
                   selectedPackage={selectedPackage}
@@ -83,51 +83,28 @@ const ServicePage = () => {
                 />
               </div>
 
-              {/* <Tabs activeTab={activeTab} onTabChange={handleTabChange} */}
 
+              {/* About Gig section */}
               <div className="tab-content">
-                <h2>About Gig</h2>
                 <AboutGig />
               </div>
 
+
               {/* Related Services Section */}
-              <div className="related-services-section">
-                <h2>Related Services</h2>
-                <div className="services-grid">
-                  {serviceData.relatedServices.map((service) => (
-                    <div key={service.id} className="service-card">
-                      <img src={service.image} alt={service.title} />
-                      <div className="service-card-content">
-                        <h3>{service.title}</h3>
-                        <div className="service-price">
-                          ₹{service.price.toLocaleString()}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div>
+                <RelatedServices
+                  serviceData={serviceData}
+                />
               </div>
 
-              {/* Blog Section */}
-              <div className="blog-section">
-                <h2>Related Blog Posts</h2>
-                <div className="blogs-container">
-                  {serviceData.blogs.map((blog) => (
-                    <div key={blog.id} className="blog-cards">
-                      <img src={blog.image} alt={blog.title} />
-                      <div className="blog-cards-content">
-                        <h3>{blog.title}</h3>
-                        <p className="blog-excerpt">{blog.excerpt}</p>
-                        <div className="blog-meta">
-                          <span className="blog-author">By {blog.author}</span>
-                          <span className="blog-date">{blog.date}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              {/* Review Section */}
+              <div>
+                <ReviewSection />
               </div>
-              <FaqTab faqs={serviceData.faqs} />
+
+              <div>
+                <FaqTab faqs={serviceData.faqs} />
+              </div>
             </div>
 
             {/* Right Column - Pricing Section */}
@@ -139,6 +116,7 @@ const ServicePage = () => {
                 features={serviceData.features}
               />
             </div>
+
           </div>
         </div>
       </div>

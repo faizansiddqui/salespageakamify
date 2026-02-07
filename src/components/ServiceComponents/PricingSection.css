@@ -133,10 +133,10 @@
 .title {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 40px;
+    justify-content: start;
+    gap: 10px;
     height: 30px;
-    padding-top: 20px;
+    padding-top: 2px;
 }
 
 .delivery-time,

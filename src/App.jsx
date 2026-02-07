@@ -9,6 +9,9 @@ import PaymentFailed from "./pages/PaymentFailed";
 import Admin from "./pages/Admin";
 import "./pages/ServicePage.css";
 import "./components/ResponsiveUtils.css";
+import OurTeam from "./components/our-team/ourTeam";
+import TeamHero from "./components/our-team/ourTeam";
+import LandingPage from "./components/our-team/ourTeam";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -32,6 +35,8 @@ function App() {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/our-team" element={<LandingPage />} />
+        
       </Routes>
     </>
   );

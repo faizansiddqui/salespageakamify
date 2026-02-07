@@ -1,4 +1,3 @@
-import React from "react";
 import TrustStats from "../components/TrustStats";
 import Testimonials from "../components/Testimonials";
 import BlogsArticles from "../components/BlogsArticles";
@@ -8,10 +7,8 @@ import WhyAkamify from "../components/WhyAkamify";
 import HeroCta from "../components/HeroCta";
 import TrustedBrands from "../components/TrustedBrands";
 import Differentiator from "../components/Differentiator";
-import Navigation from "../components/Navigation";
 import UgcVideos from "../components/UgcVideos";
 import serviceData from "../data";
-import "../App.css";
 import "../components/ResponsiveUtils.css";
 
 function Home() {

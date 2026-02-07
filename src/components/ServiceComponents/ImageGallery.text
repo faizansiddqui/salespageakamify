@@ -1,0 +1,284 @@
+import React, { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/thumbs";
+
+import { FreeMode, Thumbs } from "swiper/modules";
+import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
+import { FaPlay } from "react-icons/fa";
+import FullScreenImageViewer from "./FullScreenImageViewer";
+
+// ✅ hook import
+import useSoundEngine from "../../hooks/useSoundEngine";
+
+// ✅ helper: detect video
+const isVideo = (src = "") => {
+  const clean = src.split("?")[0].toLowerCase();
+  return (
+    clean.endsWith(".mp4") ||
+    clean.endsWith(".webm") ||
+    clean.endsWith(".ogg") ||
+    clean.endsWith(".mov") ||
+    clean.endsWith(".m4v")
+  );
+};
+
+const ImageGallery = ({ images = [], imageIndex = 0, onImageClick = () => {} }) => {
+  const mainSwiperRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(Number.isFinite(imageIndex) ? imageIndex : 0);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [fullScreenIndex, setFullScreenIndex] = useState(0);
+
+  // ✅ sound engine
+  const { unlock, playClick, tickOnce, markMoving } = useSoundEngine({
+    clickUrl: "/sound/clickSound.MP3",
+    tickUrl: "/sound/iosClickScrollSound2Fremes.MP3",
+    clickVolume: 0.7,
+    tickVolume: 0.7,
+  });
+
+  useEffect(() => {
+    const handler = (e) => {
+      const idx = e.detail;
+      setFullScreenIndex(idx);
+    };
+    window.addEventListener("fullscreen:thumbClick", handler);
+    return () => window.removeEventListener("fullscreen:thumbClick", handler);
+  }, []);
+
+  useEffect(() => {
+    if (!images || images.length === 0) return;
+
+    const idx = Math.max(0, Math.min(imageIndex || 0, images.length - 1));
+    setActiveIndex(idx);
+
+    if (mainSwiperRef.current?.slideTo) mainSwiperRef.current.slideTo(idx);
+    if (thumbsSwiper?.slideTo) thumbsSwiper.slideTo(idx);
+  }, [imageIndex, images, thumbsSwiper]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft") handlePrevClick();
+      if (e.key === "ArrowRight") handleNextClick();
+      if (e.key === "Escape" && isFullScreen) setIsFullScreen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeIndex, isFullScreen, images]);
+
+  if (!images || images.length === 0) return null;
+
+  const handleSlideChange = (swiper) => {
+    const idx = typeof swiper.realIndex === "number" ? swiper.realIndex : swiper.activeIndex;
+    setActiveIndex(idx);
+    onImageClick(idx);
+
+    tickOnce();
+    thumbsSwiper?.slideTo?.(idx);
+  };
+
+  const handleNextClick = () => {
+    playClick();
+    if (!mainSwiperRef.current) return;
+
+    const last = images.length - 1;
+    if (activeIndex === last) {
+      mainSwiperRef.current.slideTo(0);
+      setActiveIndex(0);
+      onImageClick(0);
+      thumbsSwiper?.slideTo?.(0);
+      tickOnce();
+    } else {
+      mainSwiperRef.current.slideNext();
+    }
+  };
+
+  const handlePrevClick = () => {
+    playClick();
+    if (!mainSwiperRef.current) return;
+
+    if (activeIndex === 0) {
+      const last = images.length - 1;
+      mainSwiperRef.current.slideTo(last);
+      setActiveIndex(last);
+      onImageClick(last);
+      thumbsSwiper?.slideTo?.(last);
+      tickOnce();
+    } else {
+      mainSwiperRef.current.slidePrev();
+    }
+  };
+
+  const openFullScreen = (idx) => {
+    // ✅ If video: DO NOT open your image fullscreen viewer (it doesn't support video)
+    if (isVideo(images[idx])) return;
+
+    setFullScreenIndex(idx);
+    setIsFullScreen(true);
+  };
+
+  const onThumbClick = (idx) => {
+    if (mainSwiperRef.current?.slideTo) {
+      mainSwiperRef.current.slideTo(idx);
+    } else {
+      setActiveIndex(idx);
+      onImageClick(idx);
+    }
+    thumbsSwiper?.slideTo?.(idx);
+    tickOnce();
+  };
+
+  return (
+    <>
+      <div className="w-full max-w-3xl" onPointerDown={unlock} onTouchStart={unlock}>
+        {/* Main preview */}
+        <div className="relative rounded-md overflow-hidden bg-white shadow-md">
+          <Swiper
+            onSwiper={(s) => (mainSwiperRef.current = s)}
+            slidesPerView={1}
+            speed={380}
+            onSlideChange={handleSlideChange}
+            initialSlide={activeIndex}
+            modules={[Thumbs]}
+            thumbs={{ swiper: thumbsSwiper }}
+            className="w-full"
+          >
+            {images.map((src, idx) => (
+              <SwiperSlide key={idx} className="flex items-center justify-center">
+                <div className="w-full h-auto">
+                  {isVideo(src) ? (
+                    <video
+                      src={src}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="w-full md:h-[260px] lg:h-[430px] lg:object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={src}
+                      alt={`image-${idx}`}
+                      draggable={false}
+                      loading="lazy"
+                      onClick={() => openFullScreen(idx)}
+                      className="w-full md:h-[260px] lg:h-[430px] lg:object-cover cursor-pointer select-none"
+                    />
+                  )}
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {/* Left arrow */}
+          <button
+            aria-label="previous"
+            onClick={handlePrevClick}
+            type="button"
+            title="Previous"
+            className={
+              "absolute lg:left-2 left-1 top-1/2 -translate-y-1/2 z-30 " +
+              "flex items-center justify-center w-6 h-6 lg:w-12 lg:h-12 " +
+              "rounded-2xl bg-gradient-to-br from-white/30 to-white/10 border border-white/20 " +
+              "backdrop-blur-md shadow-[0_10px_30px_rgba(10,20,40,0.35)] " +
+              "transform-gpu hover:scale-105 active:scale-95 " +
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-400"
+            }
+          >
+            <HiChevronDoubleLeft className="relative z-10 lg:text-[30px] md:text-[20px] text-white" />
+          </button>
+
+          {/* Right arrow */}
+          <button
+            aria-label="next"
+            onClick={handleNextClick}
+            type="button"
+            title="Next"
+            className={
+              "absolute lg:right-2 right-1 top-1/2 -translate-y-1/2 z-30 " +
+              "flex items-center justify-center w-6 h-6 lg:w-12 lg:h-12 " +
+              "rounded-2xl bg-gradient-to-br from-white/30 to-white/10 border border-white/20 " +
+              "backdrop-blur-md shadow-[0_10px_30px_rgba(10,20,40,0.35)] " +
+              "transform-gpu hover:scale-105 active:scale-95 " +
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-400"
+            }
+          >
+            <HiChevronDoubleRight className="relative z-10 lg:text-[30px] md:text-[20px] text-white" />
+          </button>
+        </div>
+
+        {/* Thumbnails */}
+        <div className="mt-2">
+          <Swiper
+            onSwiper={setThumbsSwiper}
+            spaceBetween={10}
+            modules={[FreeMode, Thumbs]}
+            freeMode={true}
+            watchSlidesProgress={true}
+            slideToClickedSlide={true}
+            grabCursor={true}
+            slidesPerView={"auto"}
+            className="p-2"
+            onSetTranslate={(swiper) => {
+              const vel = swiper?.touches?.diff ? Math.min(1.2, Math.abs(swiper.touches.diff / 250)) : 0;
+              markMoving(vel);
+            }}
+          >
+            {images.map((src, idx) => {
+              const isActive = idx === activeIndex;
+              const video = isVideo(src);
+
+              return (
+                <SwiperSlide key={idx} style={{ width: "140px" }}>
+                  <div className="cursor-pointer m-2 w-[140px] border rounded-md relative overflow-hidden">
+                    {/* ✅ Thumbnail */}
+                    {video ? (
+                      <div
+                        onClick={() => onThumbClick(idx)}
+                        className={`w-full h-[90px] flex items-center justify-center bg-black text-white rounded-md
+                          ${isActive ? "ring-2 ring-blue-500 ring-offset-1" : ""}`}
+                      >
+                        <FaPlay />
+                      </div>
+                    ) : (
+                      <img
+                        onClick={() => onThumbClick(idx)}
+                        src={src}
+                        alt={`thumb-${idx}`}
+                        draggable={false}
+                        loading="lazy"
+                        className={`block object-contain rounded-md w-full h-[90px]
+                          ${isActive ? "ring-2 ring-blue-500 ring-offset-1" : "border border-transparent"}`}
+                      />
+                    )}
+                  </div>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </div>
+      </div>
+
+      {/* Fullscreen viewer (ONLY images) */}
+      {isFullScreen && (
+        <FullScreenImageViewer
+          images={images.filter((x) => !isVideo(x))} // ✅ only images
+          currentIndex={fullScreenIndex}
+          onClose={() => setIsFullScreen(false)}
+          onNext={() => {
+            const next = fullScreenIndex === images.length - 1 ? 0 : fullScreenIndex + 1;
+            setFullScreenIndex(next);
+          }}
+          onPrev={() => {
+            const prev = fullScreenIndex === 0 ? images.length - 1 : fullScreenIndex - 1;
+            setFullScreenIndex(prev);
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+export default ImageGallery;

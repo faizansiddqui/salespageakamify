@@ -57,7 +57,7 @@
 
 .page-layout {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
     padding: 2rem;
     max-width: 1400px;
     margin: 0 auto;

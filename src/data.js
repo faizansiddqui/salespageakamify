@@ -10,14 +10,18 @@ export const serviceData = {
         logo: "/src/assets/placeholders/seller-logo.svg"
     },
     images: [
+        "/Akamify.mp4",
         "/img1 (1).png",
         "/img1 (2).jpg",
         "/img1 (3).png",
+        "/img1 (4).png",
+        "/img1 (3).png", 
+        "/img1 (5).png",
     ],
     price: {
-        basic: 22770,
+        starter: 22770,
         standard: 37950,
-        premium: 151800
+        enterprises: 151800
     },
     description: `
     <p>I'm a professional web developer specializing in creating custom e-commerce and real estate websites. With years of experience in modern web technologies, I deliver high-quality, responsive websites tailored to your business needs.</p>
@@ -40,52 +44,67 @@ export const serviceData = {
       <li>Stripe, PayPal, or other payment gateways</li>
     </ul>
   `,
+
     features: {
-        basic: [
-            "Functional website",
-            "8 pages",
-            "Content upload",
-            "2 plugins/extensions",
-            "E-commerce functionality",
-            "20 products",
+        starter: [
+            "Clean, mobile-friendly Store",
+            "25/50 Products Free cloud",
+            "Unlimited product pages",
+            "Easy checkout",
+            "Shopping cart",  //Shopping cart + save for later / wishlist.
+            "Basic security",
             "Payment Integration",
-            "Opt-in form",
-            "Autoresponder integration",
-            "Speed optimization",
-            "Hosting setup",
-            "Social media icons"
+            "SEO Setup",
+            "Admin panel",
+            "Product upload",
+            "CRUD analytics",
+            "Contact & FAQ page",
+            "Support pages",
+            "Hosting setup + Live store"
         ],
         standard: [
-            "Functional website",
-            "10 pages",
-            "Content upload",
-            "4 plugins/extensions",
-            "E-commerce functionality",
-            "40 products",
+            "Product reviews & ratings",
+            "Quick checkout",
+            "Order tracking",
+            "Sponsered",
+            "Advanced search & filters",
+            "Admin panel",
+            "Product searching",
+            "Product filter",
             "Payment Integration",
-            "Opt-in form",
-            "Autoresponder integration",
+            "Admin panel With CRUD",
+            "Advance analytics",
             "Speed optimization",
-            "Hosting setup",
-            "Social media icons",
-            "Progressive web app",
-            "Conversion tools"
+            "Scalig support",
+            "Basic CMS",
+            "Monthly reports",
+            "50/100 Products free clouds",
         ],
-        premium: [
-            "Functional website",
-            "10 pages",
-            "Content upload",
-            "6 plugins/extensions",
-            "E-commerce functionality",
-            "50 products",
+        enterprises: [
+            "Personalized recommendations", // (AI suggestions like “You may also like”).
+            "loyalty program", //Advanced loyalty program and gift cards.
+            "Multi-currency / multi-language",
+            "Full order & inventory management", // (sync with POS / 3PL).
+            "Advanced promotions", //Advanced loyalty program and gift cards.
+            "Advance searching", // (fast, typo-tolerant) + product filters + faceted nav.
             "Payment Integration",
-            "Opt-in form",
-            "Autoresponder integration",
+            "Advanced analytics & A/B testing", // (improve conversion).
             "Speed optimization",
-            "Hosting setup",
-            "Social media icons"
+            "Custom integrations",
+            "Customer profile creation",
+            "Audit log & Monitring",
+            "Marketing Support & Meta marketing",
+            "Personalized features +",
+            "Advance admin panel",
+            "shipping/whatsapp marketing dashboard integration",
+            "RTO handlation/IVR Support",
+            "Role based access",
+            "Advance CMS",
+            "Multivendor support"
         ]
     },
+
+    
     faqs: [
         {
             question: "What information do you need to get started?",
@@ -104,32 +123,7 @@ export const serviceData = {
             answer: "Yes, I offer maintenance and support packages to keep your website updated and secure."
         }
     ],
-    reviews: [
-        {
-            id: 1,
-            user: "John D.",
-            country: "United States",
-            rating: 5,
-            date: "December 10, 2025",
-            comment: "Excellent work! The website looks amazing and works perfectly. Highly recommend!"
-        },
-        {
-            id: 2,
-            user: "Sarah M.",
-            country: "Canada",
-            rating: 5,
-            date: "November 28, 2025",
-            comment: "Professional and responsive developer. Delivered exactly what was promised."
-        },
-        {
-            id: 3,
-            user: "Michael T.",
-            country: "United Kingdom",
-            rating: 4,
-            date: "November 15, 2025",
-            comment: "Great service overall. Minor revisions were handled quickly."
-        }
-    ],
+   
     // Related services data
     relatedServices: [
         {
@@ -165,25 +159,8 @@ export const serviceData = {
             image: "/img1 (2).jpg"
         }
     ],
-    // Blog data
-    blogs: [
-        {
-            id: 1,
-            title: "Top 10 E-commerce Trends for 2026",
-            excerpt: "Discover the latest trends that will shape the future of online shopping and how to implement them in your business strategy.",
-            date: "December 15, 2025",
-            author: "Akamify Team",
-            image: "/img1 (1).png"
-        },
-        {
-            id: 2,
-            title: "How to Optimize Your Real Estate Website for Conversions",
-            excerpt: "Learn proven strategies to increase leads and sales from your real estate website with these essential optimization techniques.",
-            date: "December 10, 2025",
-            author: "Akamify Team",
-            image: "/img1 (3).png"
-        }
-    ],
+    
+
     // UGC Videos data
     ugcVideos: [
         {

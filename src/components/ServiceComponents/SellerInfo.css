@@ -1,46 +1,80 @@
+:root {
+    --avatar-size: clamp(40px, 5vw, 60px);
+    --font-size-heading: clamp(16px, 2.5vw, 18px);
+    --gap: clamp(10px, 2vw, 15px);
+    --padding-bottom: clamp(10px, 2vw, 15px);
+    --border-color: #eee;
+    --transition-duration: 0.3s;
+}
+
 .seller-info {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+    margin-top: -20px;
+    gap: var(--gap);
+    padding-bottom: var(--padding-bottom);
+    border-bottom: 1px solid var(--border-color);
+    transition: all var(--transition-duration) ease-in-out;
 }
 
-.seller-profile {
-    background: #fff;
-}
-
-@media (max-width: 768px) {
-    .seller-info {
-        align-items: flex-start;
-        gap: 10px;
-        padding-bottom: 10px;
-    }
+.seller-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .seller-avatar img {
-    width: 60px;
-    height: 60px;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
     border-radius: 50%;
     object-fit: cover;
+    transition: transform var(--transition-duration) ease;
 }
 
-@media (max-width: 768px) {
-    .seller-avatar img {
-        width: 50px;
-        height: 50px;
+.seller-avatar img:hover {
+    transform: scale(1.05);
+}
+
+.seller-details > h3 {
+    margin: 0;
+    font-size: var(--font-size-heading);
+    font-weight: 600;
+    color: #333;
+    transition: color var(--transition-duration) ease;
+}
+
+.seller-details > h3:hover {
+    color: #007bff; /* Add a subtle color change on hover for slickness */
+}
+
+/* Responsive adjustments for smaller devices */
+@media (max-width: 480px) {
+    :root {
+        --avatar-size: 32px;
+        --font-size-heading: 23px;
+        --gap: 8px;
+        --padding-bottom: 8px;
     }
 }
 
-.seller-details>h3 {
-    margin-top: 0.3rem;
-    font-size: 18px;
+@media (max-width: 500px){
+    .seller-info {
+        margin-top: 0px;
+    }
 }
 
-@media (max-width: 768px) {
-    .seller-details>h3 {
-        font-size: 18px;
-        /* Changed from 30px to maintain better design */
-        margin-top: 0.3rem;
+/* For larger devices, subtle enhancements */
+@media (min-width: 1024px) {
+    .seller-info {
+        gap: 10px;
+        padding-bottom: 20px;
+    }
+
+    .seller-avatar img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .seller-details > h3 {
+        font-size: 30px;
     }
 }

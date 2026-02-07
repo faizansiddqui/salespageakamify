@@ -1,4 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
 :root {
   font-family: 'Poppins', sans-serif;
@@ -15,124 +27,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #ff3131;
-  text-decoration: inherit;
-}
 
-a:hover {
-  color: #e02a2a;
-}
 
 body {
   margin: 0;
   padding: 0;
-  display: flex;
-  place-items: center;
+  box-sizing: border-box;
   min-height: 100vh;
   background-color: #ffffff;
   overflow-x: hidden;
-  /* Prevent horizontal scroll */
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: #000000;
-  font-family: 'Poppins', sans-serif;
-  margin: 0 0 1rem 0;
-}
 
-button {
-  border-radius: 12px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: 'Poppins', sans-serif;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
 
-button:hover {
-  border-color: #ff3131;
-}
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-/* Responsive typography */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-  }
-
-  h3 {
-    font-size: 1.3rem;
-  }
-
-  h4 {
-    font-size: 1.1rem;
-  }
-
-  h5 {
-    font-size: 1rem;
-  }
-
-  h6 {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  h2 {
-    font-size: 1.3rem;
-  }
-
-  h3 {
-    font-size: 1.1rem;
-  }
-
-  h4 {
-    font-size: 1rem;
-  }
-
-  h5 {
-    font-size: 0.9rem;
-  }
-
-  h6 {
-    font-size: 0.8rem;
-  }
-}
-
-/* Consistent responsive breakpoints */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #000000;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #e02a2a;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
-}
