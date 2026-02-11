@@ -1,38 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Check, Copy, Mail, Calendar, User, Phone, Building, ArrowRight, Home } from 'lucide-react';
-import { sendEmail, emailTemplates } from '../config/emailService';
-import './PaymentSuccess.css';
+import React, { useState, useEffect } from "react";
+import {
+  Check,
+  Copy,
+  Mail,
+  Calendar,
+  User,
+  Building,
+  FileText,
+  ArrowRight,
+  Home,
+  ShieldCheck,
+  Clock
+} from "lucide-react";
+import { sendEmail, emailTemplates } from "../config/emailService";
+import "./PaymentSuccess.css";
 
 const PaymentSuccess = () => {
-  const [transactionId, setTransactionId] = useState('');
+  const [transactionId, setTransactionId] = useState("");
   const [copied, setCopied] = useState(false);
   const [bookingData, setBookingData] = useState(null);
-
-  useEffect(() => {
-    // Get transaction ID from URL params or localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const txId = urlParams.get('transaction_id') || localStorage.getItem('transactionId');
-    const booking = localStorage.getItem('bookingData');
-
-    if (txId) {
-      setTransactionId(txId);
-      localStorage.removeItem('failedPaymentId');
-      localStorage.removeItem('failedBookingData');
-    }
-
-    if (booking) {
-      const parsedBookingData = JSON.parse(booking);
-      setBookingData(parsedBookingData);
-      
-      // Send success email after booking data is set
-      if (txId) {
-        const sentKey = `emailSent_success_${txId}`;
-        if (localStorage.getItem(sentKey) !== 'true') {
-          sendSuccessEmail(parsedBookingData, txId);
-        }
-      }
-    }
-  }, []);
 
   const sendSuccessEmail = async (bookingInfo, txId) => {
     try {
@@ -40,15 +26,43 @@ const PaymentSuccess = () => {
         const emailTemplate = emailTemplates.bookingConfirmation({
           ...bookingInfo,
           transactionId: txId,
-          amount: '99'
+          amount: "99",
         });
-        await sendEmail(bookingInfo.email, emailTemplate.subject, emailTemplate);
-        localStorage.setItem(`emailSent_success_${txId}`, 'true');
+        await sendEmail(
+          bookingInfo.email,
+          emailTemplate.subject,
+          emailTemplate,
+        );
+        localStorage.setItem(`emailSent_success_${txId}`, "true");
       }
     } catch (error) {
-      console.error('Error sending success email:', error);
+      console.error("Error sending success email:", error);
     }
   };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const txId = urlParams.get("transaction_id") || localStorage.getItem("transactionId");
+    const booking = localStorage.getItem("bookingData");
+
+    if (txId) {
+      setTransactionId(txId);
+      localStorage.removeItem("failedPaymentId");
+      localStorage.removeItem("failedBookingData");
+    }
+
+    if (booking) {
+      const parsedBookingData = JSON.parse(booking);
+      setBookingData(parsedBookingData);
+
+      if (txId) {
+        const sentKey = `emailSent_success_${txId}`;
+        if (localStorage.getItem(sentKey) !== "true") {
+          sendSuccessEmail(parsedBookingData, txId);
+        }
+      }
+    }
+  }, []);
 
   const copyTransactionId = () => {
     navigator.clipboard.writeText(transactionId);
@@ -57,88 +71,85 @@ const PaymentSuccess = () => {
   };
 
   const handleGoHome = () => {
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
-    <div className="payment-success-page">
-      <div className="container">
-        <div className="success-card">
-          <div className="success-icon">
-            <Check size={60} />
+    <div className="ps-page-wrapper">
+      {/* Background decorative elements */}
+      <div className="ps-blob ps-blob-1"></div>
+      <div className="ps-blob ps-blob-2"></div>
+
+      <div className="ps-container border border-gray-200">
+        <div className="ps-glass-card">
+          {/* Header Section */}
+          <div className="ps-header">
+            <div className="ps-icon-badge">
+              <Check size={40} strokeWidth={3} />
+            </div>
+            <h1>Payment Successful!</h1>
+            <p>Your booking is confirmed. We've sent the details to your email.</p>
           </div>
 
-          <h1>Payment Successful!</h1>
-          <p>Your booking has been confirmed successfully</p>
-
+          {/* Transaction ID Bar */}
           {transactionId && (
-            <div className="transaction-section">
-              <h3>Transaction Details</h3>
-              <div className="transaction-id">
-                <span className="label">Transaction ID:</span>
-                <div className="id-container">
-                  <code>{transactionId}</code>
-                  <button
-                    className="copy-btn"
-                    onClick={copyTransactionId}
-                    title="Copy transaction ID"
-                  >
-                    <Copy size={16} />
-                    {copied ? 'Copied!' : 'Copy'}
-                  </button>
-                </div>
-              </div>
+            <div className="ps-tx-bar">
+              <span className="ps-tx-label">Transaction ID:</span>
+              <code className="ps-tx-code">{transactionId}</code>
+              <button className={`ps-copy-btn ${copied ? 'copied' : ''}`} onClick={copyTransactionId}>
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+                {copied ? "Copied" : "Copy"}
+              </button>
             </div>
           )}
 
+          {/* Details Grid */}
           {bookingData && (
-            <div className="booking-details">
-              <h3>Booking Information</h3>
-              <div className="details-grid">
-                <div className="detail-item">
-                  <User size={18} />
+            <div className="ps-section">
+              <h3 className="ps-section-title">Booking Details</h3>
+              <div className="ps-grid">
+                <div className="ps-grid-item">
+                  <User size={18} className="ps-item-icon" />
                   <div>
-                    <span className="label">Name:</span>
-                    <span className="value">{bookingData.name}</span>
+                    <span className="ps-item-label">Name</span>
+                    <span className="ps-item-value">{bookingData.name}</span>
                   </div>
                 </div>
-
-                <div className="detail-item">
-                  <Mail size={18} />
+                <div className="ps-grid-item">
+                  <Mail size={18} className="ps-item-icon" />
                   <div>
-                    <span className="label">Email:</span>
-                    <span className="value">{bookingData.email}</span>
+                    <span className="ps-item-label">Email</span>
+                    <span className="ps-item-value">{bookingData.email}</span>
                   </div>
                 </div>
-
-                <div className="detail-item">
-                  <Phone size={18} />
+                <div className="ps-grid-item">
+                  <Building size={18} className="ps-item-icon" />
                   <div>
-                    <span className="label">Phone:</span>
-                    <span className="value">{bookingData.phone}</span>
+                    <span className="ps-item-label">Business</span>
+                    <span className="ps-item-value">{bookingData.business}</span>
                   </div>
                 </div>
-
-                <div className="detail-item">
-                  <Building size={18} />
+                <div className="ps-grid-item">
+                  <FileText size={18} className="ps-item-icon" />
                   <div>
-                    <span className="label">Business:</span>
-                    <span className="value">{bookingData.business}</span>
+                    <span className="ps-item-label">Selected Plan</span>
+                    <span className="ps-item-value">
+                      {bookingData.planName || bookingData.planKey || "N/A"}
+                    </span>
                   </div>
                 </div>
-
-                <div className="detail-item">
-                  <Calendar size={18} />
+                <div className="ps-grid-item ps-grid-full">
+                  <Calendar size={18} className="ps-item-icon" />
                   <div>
-                    <span className="label">Scheduled Date:</span>
-                    <span className="value">
-                      {new Date(bookingData.date).toLocaleString('en-IN', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
+                    <span className="ps-item-label">Scheduled For</span>
+                    <span className="ps-item-value">
+                      {new Date(bookingData.date).toLocaleString("en-IN", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
                       })}
                     </span>
                   </div>
@@ -147,76 +158,42 @@ const PaymentSuccess = () => {
             </div>
           )}
 
-          <div className="next-steps">
-            <h3>What's Next?</h3>
-            <div className="steps-list">
-              <div className="step-item">
-                <div className="step-number">1</div>
-                <div className="step-content">
-                  <h4>Confirmation Email</h4>
-                  <p>A detailed confirmation email has been sent to your registered email address with all the booking details.</p>
-                </div>
+          {/* Steps Section */}
+          <div className="ps-section">
+            <h3 className="ps-section-title">What's Next?</h3>
+            <div className="ps-steps">
+              <div className="ps-step">
+                <div className="ps-step-num">1</div>
+                <p>Check your <strong>Email</strong> for the calendar invite.</p>
               </div>
-
-              <div className="step-item">
-                <div className="step-number">2</div>
-                <div className="step-content">
-                  <h4>Meeting Preparation</h4>
-                  <p>Our team will review your requirements and prepare a personalized demo for your business needs.</p>
-                </div>
+              <div className="ps-step">
+                <div className="ps-step-num">2</div>
+                <p>Join the <strong>Demo</strong> at your scheduled time.</p>
               </div>
-
-              <div className="step-item">
-                <div className="step-number">3</div>
-                <div className="step-content">
-                  <h4>Demo Session</h4>
-                  <p>Attend your scheduled demo session where we'll walk you through our platform features and answer all your questions.</p>
-                </div>
-              </div>
-
-              <div className="step-item">
-                <div className="step-number">4</div>
-                <div className="step-content">
-                  <h4>Refund Process</h4>
-                  <p>Your ₹99 security deposit will be refunded within 24 business hours after the meeting completion.</p>
-                </div>
+              <div className="ps-step">
+                <div className="ps-step-num">3</div>
+                <p>Rs. 99 <strong>Refund</strong> is processed within 24h after the meeting.</p>
               </div>
             </div>
           </div>
 
-          <div className="important-info">
-            <div className="info-item">
-              <Mail size={20} />
-              <strong>Email Confirmation</strong>
-              <div>
-                Check your inbox (and spam folder) for the confirmation email.
-              </div>
-            </div>
-
-            <div className="info-item">
-              <Calendar size={20} />
-              <strong>Meeting Link</strong>
-              <div>
-                The meeting link will be sent 24 hours before your scheduled time.
-              </div>
-            </div>
-
-            <div className="info-item">
-              <Phone size={20} />
-              <strong>Support</strong>
-              <div>For any queries, contact us at support@akamify.com or call +91-7317322775.</div>
-            </div>
+          {/* Footer Info */}
+          <div className="ps-footer-info">
+             <div className="ps-info-tag">
+                <ShieldCheck size={16} /> 100% Secure Payment
+             </div>
+             <div className="ps-info-tag">
+                <Clock size={16} /> Fast Refund Process
+             </div>
           </div>
 
-          <div className="action-buttons">
-            <button className="home-btn" onClick={handleGoHome}>
-              <Home size={18} />
-              Back to Home
+          {/* Action Buttons */}
+          <div className="ps-actions">
+            <button className="ps-btn-secondary" onClick={handleGoHome}>
+              <Home size={18} /> Back to Home
             </button>
-
-            <button className="view-demo-btn" onClick={() => window.location.href = '/view-demo'}>
-              <ArrowRight size={18} />
-              View Live Demo
+            <button className="ps-btn-primary" onClick={() => (window.location.href = "/view-demo")}>
+              View Live Demo <ArrowRight size={18} />
             </button>
           </div>
         </div>

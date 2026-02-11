@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Mail, Phone, Calendar, Building, User, CheckCircle, XCircle, Clock, Search, Filter, Download, Eye, Trash2, LogOut, X, RefreshCw } from 'lucide-react';
-import { db, ref, get, child, update, remove } from '../config/firebase';
-import { sendEmail, emailTemplates } from '../config/emailService';
+import { Lock, Mail, Phone, Calendar, Building, User, CheckCircle, XCircle, Clock, Search, Filter, Download, Eye, Trash2, LogOut, X, RefreshCw, FileText } from 'lucide-react';
+import { db, ref, get } from '../config/firebase';
+// import { sendEmail, emailTemplates } from '../config/emailService';
+import { getInvoicePdfBlob } from '../utils/invoice';
 import './Admin.css';
 
 const Admin = () => {
@@ -14,6 +15,12 @@ const Admin = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [planPurchases, setPlanPurchases] = useState([]);
+  const [filteredPlanPurchases, setFilteredPlanPurchases] = useState([]);
+  const [planSearchTerm, setPlanSearchTerm] = useState('');
+  const [planStatusFilter, setPlanStatusFilter] = useState('all');
+  const [planLoading, setPlanLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('bookings');
 
   // Admin password - in production, this should be securely stored
   const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
@@ -82,12 +89,17 @@ const Admin = () => {
   useEffect(() => {
     if (isLoggedIn) {
       loadBookings();
+      loadPlanPurchases();
     }
   }, [isLoggedIn]);
 
   useEffect(() => {
     filterBookings();
   }, [bookings, searchTerm, statusFilter]);
+
+  useEffect(() => {
+    filterPlanPurchases();
+  }, [planPurchases, planSearchTerm, planStatusFilter]);
 
   const loadBookings = async () => {
     setLoading(true);
@@ -117,6 +129,32 @@ const Admin = () => {
     }
   };
 
+  const loadPlanPurchases = async () => {
+    setPlanLoading(true);
+    try {
+      const purchasesRef = ref(db, 'planPurchases');
+      const snapshot = await get(purchasesRef);
+
+      if (snapshot.exists()) {
+        const purchasesData = [];
+        snapshot.forEach((childSnapshot) => {
+          purchasesData.push({
+            id: childSnapshot.key,
+            ...childSnapshot.val()
+          });
+        });
+        purchasesData.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+        setPlanPurchases(purchasesData);
+      } else {
+        setPlanPurchases([]);
+      }
+    } catch (error) {
+      console.error('Error loading plan purchases:', error);
+    } finally {
+      setPlanLoading(false);
+    }
+  };
+
   const filterBookings = () => {
     let filtered = bookings;
 
@@ -125,6 +163,7 @@ const Admin = () => {
         booking.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         booking.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         booking.business.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (booking.planName || booking.planKey || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         booking.transactionId.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -136,8 +175,30 @@ const Admin = () => {
     setFilteredBookings(filtered);
   };
 
+  const filterPlanPurchases = () => {
+    let filtered = planPurchases;
+
+    if (planSearchTerm) {
+      filtered = filtered.filter((purchase) =>
+        (purchase.name || '').toLowerCase().includes(planSearchTerm.toLowerCase()) ||
+        (purchase.email || '').toLowerCase().includes(planSearchTerm.toLowerCase()) ||
+        (purchase.phone || '').toLowerCase().includes(planSearchTerm.toLowerCase()) ||
+        (purchase.planName || '').toLowerCase().includes(planSearchTerm.toLowerCase()) ||
+        (purchase.invoiceId || '').toLowerCase().includes(planSearchTerm.toLowerCase()) ||
+        (purchase.paymentId || '').toLowerCase().includes(planSearchTerm.toLowerCase())
+      );
+    }
+
+    if (planStatusFilter !== 'all') {
+      filtered = filtered.filter((purchase) => (purchase.status || 'paid') === planStatusFilter);
+    }
+
+    setFilteredPlanPurchases(filtered);
+  };
+
   const refreshData = () => {
     loadBookings();
+    loadPlanPurchases();
   };
 
   const handleLogin = (e) => {
@@ -155,65 +216,66 @@ const Admin = () => {
     clearSession(); // Clear session and logout
   };
 
-  const updateBookingStatus = async (bookingId, newStatus) => {
-    try {
-      const bookingRef = ref(db, `bookings/${bookingId}`);
-      await update(bookingRef, { status: newStatus });
+  // const updateBookingStatus = async (bookingId, newStatus) => {
+  //   try {
+  //     const bookingRef = ref(db, `bookings/${bookingId}`);
+  //     await update(bookingRef, { status: newStatus });
       
-      setBookings(prev =>
-        prev.map(booking =>
-          booking.id === bookingId ? { ...booking, status: newStatus } : booking
-        )
-      );
+  //     setBookings(prev =>
+  //       prev.map(booking =>
+  //         booking.id === bookingId ? { ...booking, status: newStatus } : booking
+  //       )
+  //     );
       
-      // Send email notification
-      await sendStatusUpdateEmail(bookingId, newStatus);
-    } catch (error) {
-      console.error('Error updating booking status:', error);
-    }
-  };
+  //     // Send email notification
+  //     await sendStatusUpdateEmail(bookingId, newStatus);
+  //   } catch (error) {
+  //     console.error('Error updating booking status:', error);
+  //   }
+  // };
 
-  const sendStatusUpdateEmail = async (bookingId, status) => {
-    try {
-      const booking = bookings.find(b => b.id === bookingId);
-      if (booking) {
-        const emailData = {
-          ...booking,
-          status: status,
-          date: booking.date
-        };
+  // const sendStatusUpdateEmail = async (bookingId, status) => {
+  //   try {
+  //     const booking = bookings.find(b => b.id === bookingId);
+  //     if (booking) {
+  //       const emailData = {
+  //         ...booking,
+  //         status: status,
+  //         date: booking.date
+  //       };
 
-        const emailTemplate = emailTemplates.bookingStatusUpdate(emailData);
-        await sendEmail(booking.email, emailTemplate.subject, emailTemplate);
-      }
-    } catch (error) {
-      console.error('Error sending status update email:', error);
-    }
-  };
+  //       const emailTemplate = emailTemplates.bookingStatusUpdate(emailData);
+  //       await sendEmail(booking.email, emailTemplate.subject, emailTemplate);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sending status update email:', error);
+  //   }
+  // };
 
-  const deleteBooking = async (bookingId) => {
-    if (window.confirm('Are you sure you want to delete this booking?')) {
-      try {
-        const bookingRef = ref(db, `bookings/${bookingId}`);
-        await remove(bookingRef);
-        setBookings(prev => prev.filter(booking => booking.id !== bookingId));
-        if (selectedBooking?.id === bookingId) {
-          setSelectedBooking(null);
-        }
-      } catch (error) {
-        console.error('Error deleting booking:', error);
-      }
-    }
-  };
+  // const deleteBooking = async (bookingId) => {
+  //   if (window.confirm('Are you sure you want to delete this booking?')) {
+  //     try {
+  //       const bookingRef = ref(db, `bookings/${bookingId}`);
+  //       await remove(bookingRef);
+  //       setBookings(prev => prev.filter(booking => booking.id !== bookingId));
+  //       if (selectedBooking?.id === bookingId) {
+  //         setSelectedBooking(null);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error deleting booking:', error);
+  //     }
+  //   }
+  // };
 
   const exportData = () => {
     const csvContent = [
-      ['Name', 'Email', 'Phone', 'Business', 'Date', 'Transaction ID', 'Status', 'Amount', 'Created At'],
+      ['Name', 'Email', 'Phone', 'Business', 'Plan', 'Date', 'Transaction ID', 'Status', 'Amount', 'Created At'],
       ...filteredBookings.map(booking => [
         booking.name,
         booking.email,
         booking.phone,
         booking.business,
+        booking.planName || booking.planKey || '',
         new Date(booking.date).toLocaleString(),
         booking.transactionId,
         booking.status,
@@ -231,9 +293,46 @@ const Admin = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const exportPlanPurchases = () => {
+    const csvContent = [
+      ['Name', 'Email', 'Phone', 'Plan', 'Invoice ID', 'Payment ID', 'Total', 'Status', 'Created At'],
+      ...filteredPlanPurchases.map(purchase => [
+        purchase.name,
+        purchase.email,
+        purchase.phone,
+        purchase.planName,
+        purchase.invoiceId,
+        purchase.paymentId,
+        purchase.total,
+        purchase.status,
+        new Date(purchase.createdAt || purchase.date).toLocaleString()
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `plan_purchases_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleInvoiceDownload = (purchase) => {
+    const blob = getInvoicePdfBlob(purchase);
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Invoice-${purchase.invoiceId || 'Plan'}.pdf`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
-      case 'confirmed': return '#27ae60';
+      case 'confirmed':
+      case 'paid':
+        return '#27ae60';
       case 'failed': return '#e74c3c';
       default: return '#95a5a6';
     }
@@ -241,7 +340,9 @@ const Admin = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'confirmed': return <CheckCircle size={16} />;
+      case 'confirmed':
+      case 'paid':
+        return <CheckCircle size={16} />;
       case 'failed': return <XCircle size={16} />;
       default: return <Clock size={16} />;
     }
@@ -297,6 +398,10 @@ const Admin = () => {
               <Download size={18} />
               Export CSV
             </button>
+            <button className="export-btn" onClick={exportPlanPurchases}>
+              <FileText size={18} />
+              Export Plans
+            </button>
             <button className="logout-btn" onClick={handleLogout}>
               <LogOut size={18} />
               Logout
@@ -306,144 +411,322 @@ const Admin = () => {
       </div>
 
       <div className="admin-content">
-        <div className="filters-section">
-          <div className="search-bar">
-            <Search size={20} />
-            <input
-              type="text"
-              placeholder="Search by name, email, business, or transaction ID..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          
-          <div className="filter-dropdown">
-            <Filter size={20} />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">All Statuses</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="failed">Failed</option>
-            </select>
-          </div>
+        <div className="admin-tabs">
+          <button
+            className={`admin-tab ${activeTab === 'bookings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('bookings')}
+          >
+            Bookings
+          </button>
+          <button
+            className={`admin-tab ${activeTab === 'purchases' ? 'active' : ''}`}
+            onClick={() => setActiveTab('purchases')}
+          >
+            Plan Purchases
+          </button>
         </div>
 
-        <div className="bookings-section">
-          <div className="section-header">
-            <h2>Bookings ({filteredBookings.length})</h2>
-          </div>
-          
-          {loading ? (
-            <div className="bookings-table-container">
-              <div className="table-skeleton-loader">
-                <div className="table-skeleton-header">
-                  <div className="table-skeleton-header-cell" style={{flex: '1.5'}}></div>
-                  <div className="table-skeleton-header-cell" style={{flex: '2'}}></div>
-                  <div className="table-skeleton-header-cell" style={{flex: '1.2'}}></div>
-                  <div className="table-skeleton-header-cell" style={{flex: '1.5'}}></div>
-                  <div className="table-skeleton-header-cell" style={{flex: '1.3'}}></div>
-                  <div className="table-skeleton-header-cell" style={{flex: '0.8'}}></div>
-                  <div className="table-skeleton-header-cell" style={{flex: '1'}}></div>
-                </div>
-                {[...Array(3)].map((_, index) => (
-                  <div key={index} className="table-skeleton-row">
-                    <div className="table-skeleton-cell name"></div>
-                    <div className="table-skeleton-cell email"></div>
-                    <div className="table-skeleton-cell phone"></div>
-                    <div className="table-skeleton-cell business"></div>
-                    <div className="table-skeleton-cell date"></div>
-                    <div className="table-skeleton-cell status"></div>
-                    <div className="table-skeleton-cell action"></div>
+        {activeTab === 'bookings' && (
+          <>
+            <div className="filters-section">
+              <div className="search-bar">
+                <Search size={20} />
+                <input
+                  type="text"
+                  placeholder="Search by name, email, business, plan, or transaction ID..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="filter-dropdown">
+                <Filter size={20} />
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="failed">Failed</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="bookings-section">
+              <div className="section-header">
+                <h2>Bookings ({filteredBookings.length})</h2>
+              </div>
+
+              {loading ? (
+                <div className="bookings-table-container">
+                  <div className="table-skeleton-loader">
+                    <div className="table-skeleton-header">
+                      <div className="table-skeleton-header-cell" style={{flex: '1.5'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '2'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1.2'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1.5'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1.3'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1.3'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '0.8'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1'}}></div>
+                    </div>
+                    {[...Array(3)].map((_, index) => (
+                      <div key={index} className="table-skeleton-row">
+                        <div className="table-skeleton-cell name"></div>
+                        <div className="table-skeleton-cell email"></div>
+                        <div className="table-skeleton-cell phone"></div>
+                        <div className="table-skeleton-cell business"></div>
+                        <div className="table-skeleton-cell business"></div>
+                        <div className="table-skeleton-cell date"></div>
+                        <div className="table-skeleton-cell status"></div>
+                        <div className="table-skeleton-cell action"></div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          ) : filteredBookings.length === 0 ? (
-            <div className="bookings-table-container">
-              <div className="no-data">
-                <div className="no-data-icon">
-                  <Calendar size={48} />
                 </div>
-                <h3>No bookings found</h3>
-                <p>Try adjusting your filters or search terms</p>
+              ) : filteredBookings.length == 0 ? (
+                <div className="bookings-table-container">
+                  <div className="no-data">
+                    <div className="no-data-icon">
+                      <Calendar size={48} />
+                    </div>
+                    <h3>No bookings found</h3>
+                    <p>Try adjusting your filters or search terms</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="bookings-table-container">
+                  <table className="bookings-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Business</th>
+                        <th>Plan</th>
+                        <th>Scheduled Date & Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredBookings.map(booking => (
+                        <tr key={booking.id} className="booking-row">
+                          <td>
+                            <div className="table-cell-info">
+                              <User size={16} />
+                              <span>{booking.name}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <Mail size={16} />
+                              <span>{booking.email}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <Phone size={16} />
+                              <span>{booking.phone}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <Building size={16} />
+                              <span>{booking.business}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <CheckCircle size={16} />
+                              <span>{booking.planName || booking.planKey || "N/A"}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <Calendar size={16} />
+                              <span>{new Date(booking.date).toLocaleString()}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div
+                              className="status-badge"
+                              style={{ backgroundColor: getStatusColor(booking.status) }}
+                            >
+                              {getStatusIcon(booking.status)}
+                              <span>{booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              className="view-btn"
+                              onClick={() => setSelectedBooking(booking)}
+                            >
+                              <Eye size={16} />
+                              View Details
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {activeTab === 'purchases' && (
+          <>
+            <div className="filters-section plan-filters-section">
+              <div className="search-bar">
+                <Search size={20} />
+                <input
+                  type="text"
+                  placeholder="Search by name, email, phone, plan, invoice ID, or payment ID..."
+                  value={planSearchTerm}
+                  onChange={(e) => setPlanSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="filter-dropdown">
+                <Filter size={20} />
+                <select
+                  value={planStatusFilter}
+                  onChange={(e) => setPlanStatusFilter(e.target.value)}
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="paid">Paid</option>
+                  <option value="failed">Failed</option>
+                </select>
               </div>
             </div>
-          ) : (
-            <div className="bookings-table-container">
-              <table className="bookings-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Business</th>
-                    <th>Scheduled Date & Time</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredBookings.map(booking => (
-                    <tr key={booking.id} className="booking-row">
-                      <td>
-                        <div className="table-cell-info">
-                          <User size={16} />
-                          <span>{booking.name}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="table-cell-info">
-                          <Mail size={16} />
-                          <span>{booking.email}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="table-cell-info">
-                          <Phone size={16} />
-                          <span>{booking.phone}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="table-cell-info">
-                          <Building size={16} />
-                          <span>{booking.business}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="table-cell-info">
-                          <Calendar size={16} />
-                          <span>{new Date(booking.date).toLocaleString()}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div 
-                          className="status-badge"
-                          style={{ backgroundColor: getStatusColor(booking.status) }}
-                        >
-                          {getStatusIcon(booking.status)}
-                          <span>{booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <button 
-                          className="view-btn"
-                          onClick={() => setSelectedBooking(booking)}
-                        >
-                          <Eye size={16} />
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
 
+            <div className="bookings-section plan-purchases-section">
+              <div className="section-header section-header-row">
+                <h2>Plan Purchases ({filteredPlanPurchases.length})</h2>
+                <div className="section-actions">
+                  <button className="refresh-btn" onClick={loadPlanPurchases} disabled={planLoading}>
+                    <RefreshCw size={18} className={planLoading ? 'spinning' : ''} />
+                    Refresh
+                  </button>
+                  <button className="export-btn" onClick={exportPlanPurchases}>
+                    <Download size={18} />
+                    Export CSV
+                  </button>
+                </div>
+              </div>
+
+              {planLoading ? (
+                <div className="bookings-table-container">
+                  <div className="table-skeleton-loader">
+                    <div className="table-skeleton-header">
+                      <div className="table-skeleton-header-cell" style={{flex: '1.2'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1.8'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1.2'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1.2'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '1'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '0.8'}}></div>
+                      <div className="table-skeleton-header-cell" style={{flex: '0.9'}}></div>
+                    </div>
+                    {[...Array(3)].map((_, index) => (
+                      <div key={index} className="table-skeleton-row">
+                        <div className="table-skeleton-cell name"></div>
+                        <div className="table-skeleton-cell email"></div>
+                        <div className="table-skeleton-cell phone"></div>
+                        <div className="table-skeleton-cell business"></div>
+                        <div className="table-skeleton-cell date"></div>
+                        <div className="table-skeleton-cell status"></div>
+                        <div className="table-skeleton-cell action"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : filteredPlanPurchases.length == 0 ? (
+                <div className="bookings-table-container">
+                  <div className="no-data">
+                    <div className="no-data-icon">
+                      <FileText size={48} />
+                    </div>
+                    <h3>No plan purchases found</h3>
+                    <p>Try adjusting your filters or search terms</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="bookings-table-container">
+                  <table className="bookings-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Plan</th>
+                        <th>Invoice ID</th>
+                        <th>Payment ID</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredPlanPurchases.map((purchase) => (
+                        <tr key={purchase.id} className="booking-row">
+                          <td>
+                            <div className="table-cell-info">
+                              <User size={16} />
+                              <span>{purchase.name}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <Mail size={16} />
+                              <span>{purchase.email}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <Phone size={16} />
+                              <span>{purchase.phone}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-cell-info">
+                              <Calendar size={16} />
+                              <span>{purchase.planName || purchase.planKey}</span>
+                            </div>
+                          </td>
+                          <td>{purchase.invoiceId || '-'}</td>
+                          <td>{purchase.paymentId || '-'}</td>
+                          <td>Rs. {Number(purchase.total || 0).toLocaleString('en-IN')}</td>
+                          <td>
+                            <div
+                              className="status-badge"
+                              style={{ backgroundColor: getStatusColor(purchase.status || 'confirmed') }}
+                            >
+                              {getStatusIcon(purchase.status || 'confirmed')}
+                              <span>{(purchase.status || 'paid').charAt(0).toUpperCase() + (purchase.status || 'paid').slice(1)}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              className="view-btn download-btn"
+                              onClick={() => handleInvoiceDownload(purchase)}
+                            >
+                              <Download size={16} />
+                              Invoice
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
       {selectedBooking && (
         <div className="modal-overlay" onClick={() => setSelectedBooking(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -477,6 +760,10 @@ const Admin = () => {
                     <label>Business:</label>
                     <span>{selectedBooking.business}</span>
                   </div>
+                  <div className="detail-item">
+                    <label>Selected Plan:</label>
+                    <span>{selectedBooking.planName || selectedBooking.planKey || "N/A"}</span>
+                  </div>
                 </div>
               </div>
               
@@ -493,7 +780,7 @@ const Admin = () => {
                   </div>
                   <div className="detail-item">
                     <label>Amount:</label>
-                    <span>₹{selectedBooking.amount}</span>
+                    <span>Rs. {selectedBooking.amount}</span>
                   </div>
                   <div className="detail-item">
                     <label>Status:</label>
@@ -529,3 +816,4 @@ const Admin = () => {
 };
 
 export default Admin;
+

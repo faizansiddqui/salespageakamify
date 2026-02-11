@@ -4,6 +4,11 @@
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
+  // CORS (helpful for local dev or separate frontend domains)
+  res.setHeader('Access-Control-Allow-Origin', process.env.EMAIL_ALLOWED_ORIGIN || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
   // Only allow POST requests
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
@@ -14,39 +19,59 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const { to, subject, html, from } = body;
+    let body = req.body;
+    if (typeof body === 'string') {
+      const trimmed = body.trim();
+      try {
+        body = trimmed ? JSON.parse(trimmed) : {};
+      } catch (parseError) {
+        return res.status(400).json({ error: 'Invalid JSON body' });
+      }
+    }
+    body = body || {};
+    const { to, subject, html, attachments } = body;
 
     // Validate required fields
     if (!to || !subject || !html) {
       return res.status(400).json({ error: 'Missing required fields: to, subject, html' });
     }
 
-    const smtpHost = process.env.VITE_SMTP_HOST;
-    const smtpPortRaw = process.env.VITE_SMTP_PORT;
-    const smtpSecureRaw = process.env.VITE_SMTP_SECURE;
-    const smtpUser = process.env.VITE_SMTP_USER;
-    const smtpPass = process.env.VITE_SMTP_PASS;
+    const smtpHost = process.env.SMTP_HOST || process.env.VITE_SMTP_HOST;
+    const smtpPortRaw = process.env.SMTP_PORT || process.env.VITE_SMTP_PORT;
+    const smtpSecureRaw = process.env.SMTP_SECURE || process.env.VITE_SMTP_SECURE;
+    const smtpUser = process.env.SMTP_USER || process.env.VITE_SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS || process.env.VITE_SMTP_PASS;
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
+    const smtpPort = smtpPortRaw ? Number(smtpPortRaw) : 587;
+    const smtpSecure =
+      String(smtpSecureRaw || '').toLowerCase() === 'true' ||
+      String(smtpSecureRaw || '') === '1' ||
+      smtpPort === 465;
+    const normalizedUser = String(smtpUser).trim();
+    const normalizedPass = String(smtpPass).replace(/\s+/g, "");
+    const normalizedHost = String(smtpHost).trim();
+    const missingEnv = [];
+    if (!normalizedHost) missingEnv.push('SMTP_HOST');
+    if (!normalizedUser) missingEnv.push('SMTP_USER');
+    if (!normalizedPass) missingEnv.push('SMTP_PASS');
+
+    if (missingEnv.length) {
       return res.status(500).json({
         success: false,
         error: 'SMTP env vars are not configured on the server',
+        missing: missingEnv,
         message: 'Failed to send email'
       });
     }
 
-    const smtpPort = smtpPortRaw ? Number(smtpPortRaw) : 587;
-    const smtpSecure = smtpSecureRaw === 'true' || smtpSecureRaw === '1';
-
     // Create Nodemailer transporter with your SMTP config
     const transporter = nodemailer.createTransport({
-      host: smtpHost,
+      host: normalizedHost,
       port: Number.isFinite(smtpPort) ? smtpPort : 587,
       secure: smtpSecure, // true for 465, false for other ports
       auth: {
-        user: smtpUser,
-        pass: smtpPass
+        user: normalizedUser,
+        pass: normalizedPass
       }
     });
 
@@ -54,11 +79,16 @@ export default async function handler(req, res) {
     await transporter.verify();
 
     // Send email
+    const fromAddress =
+      process.env.EMAIL_FROM ||
+      process.env.VITE_EMAIL_FROM ||
+      normalizedUser;
     const mailOptions = {
-      from: from || process.env.VITE_EMAIL_FROM || smtpUser,
+      from: fromAddress,
       to: to,
       subject: subject,
-      html: html
+      html: html,
+      attachments: Array.isArray(attachments) ? attachments : undefined
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -71,7 +101,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Vercel Function Error:', error);
-    
+
     res.status(500).json({
       success: false,
       error: error?.message || 'Unknown error',

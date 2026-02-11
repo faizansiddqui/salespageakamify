@@ -38,9 +38,10 @@
 .form-section {
   background: white;
   color: black;
-  border-radius: 20px;
+  border-radius: 8px;
   padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(186, 185, 185);
+  /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); */
 }
 
 .enrollment-form {
@@ -67,7 +68,16 @@
 .form-group input {
   padding: 12px 16px;
   border: 2px solid #e1e5e9;
-  border-radius: 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.form-group select {
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
   background: #f8f9fa;
@@ -77,10 +87,21 @@
   outline: none;
   border-color: #667eea;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  /* box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); */
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
 }
 
 .form-group input.error {
+  border-color: #e74c3c;
+  background: #fdf2f2;
+}
+
+.form-group select.error {
   border-color: #e74c3c;
   background: #fdf2f2;
 }
@@ -168,7 +189,7 @@
   opacity: 0.9;
   background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   padding: 1rem 1.5rem;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .proceed-btn {
@@ -207,9 +228,10 @@
 
 .info-card {
   background: white;
-  border-radius: 15px;
+  border-radius: 8px;
+  border: 1px solid gray;
   padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); */
 }
 
 .info-card h3 {
@@ -251,8 +273,9 @@
 
 .faq-section {
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid gray;
+  /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); */
 }
 
 .faq-section h2 {

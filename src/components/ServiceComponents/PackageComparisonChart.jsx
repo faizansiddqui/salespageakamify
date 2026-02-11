@@ -20,7 +20,14 @@ export default function PackageComparisonSection() {
     return pkg.basePrice + add;
   };
   const handleSelectPackage = (pkg, idx) => {
-    alert(`${pkg.name} selected — Total: ${formatPrice(calculateTotal(pkg, idx))}`);
+    const planKey = pkg.id === "enterprise" ? "enterprises" : pkg.id;
+    const detail = {
+      planKey,
+      deliveryOptionIndex: selectedDelivery[idx] ?? 0,
+    };
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("plan:select", { detail }));
+    }
   };
   // helper to render cell: accepts value (bool|string)
   const RenderCell = ({ value }) => {

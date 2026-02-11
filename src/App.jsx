@@ -6,6 +6,8 @@ import BookEnrollment from "./pages/BookEnrollment";
 import ViewDemo from "./pages/ViewDemo";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
+import PlanPaymentSuccess from "./pages/PlanPaymentSuccess";
+import PlanPaymentFailed from "./pages/PlanPaymentFailed";
 import Admin from "./pages/Admin";
 import "./pages/ServicePage.css";
 import "./components/ResponsiveUtils.css";
@@ -34,6 +36,8 @@ function App() {
         <Route path="/view-demo" element={<ViewDemo />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
+        <Route path="/plan-payment-success" element={<PlanPaymentSuccess />} />
+        <Route path="/plan-payment-failed" element={<PlanPaymentFailed />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/our-team" element={<LandingPage />} />
         

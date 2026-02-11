@@ -1,154 +1,210 @@
-import React, { useState } from 'react';
-import { ExternalLink, Eye, ShoppingCart, Users, MessageSquare, Grid, Store, HeadphonesIcon } from 'lucide-react';
-import './ViewDemo.css';
+import React, { useState } from "react";
+import {
+  ExternalLink,
+  ShoppingCart,
+  Grid,
+  Store,
+  MessageSquare,
+  Zap,
+  ArrowUpRight,
+  ShieldCheck,
+  Sparkles,
+  ChevronLeft,
+  Layout,
+  Box,
+  Layers,
+} from "lucide-react";
 
 const ViewDemo = () => {
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const [activeTab, setActiveTab] = useState("demos"); // 'demos' or 'components'
+  const [hoveredId, setHoveredId] = useState(null);
 
-  const demoCards = [
+  const demos = [
     {
       id: 1,
-      title: 'E-commerce Home Page',
-      description: 'Modern and responsive homepage with product showcases, featured collections, and seamless navigation. Includes hero banners, trending products, and customer testimonials.',
-      image: '/demo/ecommerce-home.jpg',
-      icon: <ShoppingCart size={24} />,
-      features: ['Hero Banner', 'Product Grid', 'Search & Filter', 'Shopping Cart', 'User Reviews'],
-      liveUrl: '#'
+      title: "Global Storefront",
+      desc: "Next-gen shopping experience with lightning fast edge-delivery.",
+      icon: <ShoppingCart className="text-blue-500" size={24} />,
+      badge: "Bestseller",
+      img: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=600",
+      span: "md:col-span-2 md:row-span-2",
     },
     {
       id: 2,
-      title: 'Admin Dashboard',
-      description: 'Comprehensive admin panel for managing products, orders, customers, and analytics. Real-time data visualization and intuitive controls.',
-      image: '/demo/admin-dashboard.jpg',
-      icon: <Grid size={24} />,
-      features: ['Order Management', 'Product Control', 'Analytics Dashboard', 'User Management', 'Settings'],
-      liveUrl: '#'
+      title: "Admin Panel",
+      desc: "Smart inventory & analytics.",
+      icon: <Grid className="text-purple-500" size={20} />,
+      img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600",
+      span: "md:col-span-1 md:row-span-1",
     },
     {
       id: 3,
-      title: 'Category Page',
-      description: 'Dynamic category browsing with advanced filtering, sorting options, and grid/list view toggle. Optimized for conversion and user experience.',
-      image: '/demo/category-page.jpg',
-      icon: <Store size={24} />,
-      features: ['Product Filtering', 'Price Range', 'Brand Filter', 'Sort Options', 'Quick View'],
-      liveUrl: '#'
+      title: "AI Support",
+      desc: "Automated customer success.",
+      icon: <MessageSquare className="text-emerald-500" size={20} />,
+      img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400",
+      span: "md:col-span-1 md:row-span-1",
     },
     {
       id: 4,
-      title: 'Contact Page',
-      description: 'Professional contact page with interactive forms, location maps, and multiple contact channels. Integrated with customer support system.',
-      image: '/demo/contact-page.jpg',
-      icon: <MessageSquare size={24} />,
-      features: ['Contact Form', 'Location Map', 'Live Chat', 'FAQ Section', 'Social Links'],
-      liveUrl: '#'
+      title: "Analytics Deck",
+      desc: "Deep data visualization for scaling faster.",
+      icon: <Zap className="text-orange-500" size={24} />,
+      img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600",
+      span: "md:col-span-3 md:row-span-1",
     },
-     {
-      id: 5,
-      title: 'Contact Page',
-      description: 'Professional contact page with interactive forms, location maps, and multiple contact channels. Integrated with customer support system.',
-      image: '/demo/contact-page.jpg',
-      icon: <MessageSquare size={24} />,
-      features: ['Contact Form', 'Location Map', 'Live Chat', 'FAQ Section', 'Social Links'],
-      liveUrl: '#'
-    },
-     {
-      id: 6,
-      title: 'Contact Page',
-      description: 'Professional contact page with interactive forms, location maps, and multiple contact channels. Integrated with customer support system.',
-      image: '/demo/contact-page.jpg',
-      icon: <MessageSquare size={24} />,
-      features: ['Contact Form', 'Location Map', 'Live Chat', 'FAQ Section', 'Social Links'],
-      liveUrl: '#'
-    }
+  ];
+
+  const components = [
+    { id: "c1", name: "Navigation Bar", type: "UI Kit", status: "Ready" },
+    { id: "c2", name: "Product Grid", type: "Commerce", status: "Beta" },
+    { id: "c3", name: "Auth Modals", type: "Security", status: "Ready" },
+    { id: "c4", name: "Checkout Form", type: "Finance", status: "Updated" },
+    { id: "c5", name: "Smart Search", type: "AI", status: "Ready" },
+    { id: "c6", name: "Footer Pro", type: "UI Kit", status: "Ready" },
   ];
 
   return (
-    <div className="view-demo-page">
-      <div className="demo-container">
-        <div className="demo-header">
-          <h1>Live Demo Showcase</h1>
-          <p>Explore our comprehensive e-commerce platform with interactive demos</p>
-        </div>
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-indigo-100 font-['Plus_Jakarta_Sans',sans-serif]">
+      {/* Background Blobs */}
+      <div className="fixed inset-0 overflow-hidden -z-10">
+        <div className="absolute top-[-5%] left-[-5%] w-[40%] h-[40%] bg-blue-100/50 blur-[100px] rounded-full"></div>
+        <div className="absolute bottom-[-5%] right-[-5%] w-[40%] h-[40%] bg-indigo-100/50 blur-[100px] rounded-full"></div>
+      </div>
 
-        <div className="demo-grid">
-          {demoCards.map((card) => (
-            <div
-              key={card.id}
-              className={`demo-card ${hoveredCard === card.id ? 'hovered' : ''}`}
-              onMouseEnter={() => setHoveredCard(card.id)}
-              onMouseLeave={() => setHoveredCard(null)}
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        {/* Top Nav: Back Button & Tabs */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+          {/* Back Button */}
+          <button
+            onClick={() => window.history.back()}
+            className="group flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-[8px] text-sm font-bold text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-all active:scale-95"
+          >
+            <ChevronLeft
+              size={18}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            Back
+          </button>
+
+          {/* Glass Tab Switcher */}
+          <div className="bg-slate-200/50 backdrop-blur-md p-1.5 rounded-2xl flex gap-1 border border-white">
+            <button
+              onClick={() => setActiveTab("demos")}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${activeTab === "demos" ? "bg-white shadow-md text-indigo-600 scale-100" : "text-slate-500 hover:text-slate-700"}`}
             >
-              <div className="card-image-container">
-                <div className="card-icon">
-                  {card.icon}
-                </div>
-                <img 
-                  src={card.image} 
-                  alt={card.title}
-                  onError={(e) => {
-                    e.target.src = `https://picsum.photos/seed/${card.title}/400/250.jpg`;
-                  }}
-                />
-                <div className="image-overlay">
-                  <Eye size={20} />
-                  <span>Preview</span>
-                </div>
-              </div>
-
-              <div className="card-content">
-                <h3>{card.title}</h3>
-                <p>{card.description}</p>
-
-                <div className="card-features">
-                  <h4>Key Features:</h4>
-                  <div className="features-list">
-                    {card.features.map((feature, index) => (
-                      <span key={index} className="feature-tag">
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <button 
-                  className="view-live-btn"
-                  onClick={() => window.open(card.liveUrl, '_blank')}
-                >
-                  <ExternalLink size={16} />
-                  View Live Demo
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="demo-info-section">
-          <div className="info-card">
-            <h3>Why Choose Our Platform?</h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <Users size={32} />
-                <h4>User-Friendly</h4>
-                <p>Intuitive interface designed for maximum conversion</p>
-              </div>
-              <div className="info-item">
-                <ShoppingCart size={32} />
-                <h4>Complete E-commerce</h4>
-                <p>Full-featured solution from catalog to checkout</p>
-              </div>
-              <div className="info-item">
-                <HeadphonesIcon size={32} />
-                <h4>24/7 Support</h4>
-                <p>Dedicated support team always ready to help</p>
-              </div>
-              <div className="info-item">
-                <Grid size={32} />
-                <h4>Responsive Design</h4>
-                <p>Perfect experience on all devices and screen sizes</p>
-              </div>
-            </div>
+              <Layout size={16} /> Demos
+            </button>
+            <button
+              onClick={() => setActiveTab("components")}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${activeTab === "components" ? "bg-white shadow-md text-indigo-600 scale-100" : "text-slate-500 hover:text-slate-700"}`}
+            >
+              <Layers size={16} /> Components
+            </button>
           </div>
         </div>
+
+        {/* Dynamic Content Heading */}
+        <div className="mb-10 animate-in fade-in duration-500">
+          <h2 className="text-4xl font-black tracking-tight flex items-center gap-3">
+            {activeTab === "demos" ? "Live Demos" : "UI Components"}
+            <Sparkles className="text-indigo-500" size={24} />
+          </h2>
+          <p className="text-slate-500 mt-2 font-medium">
+            {activeTab === "demos"
+              ? "Fully functional templates for your next project."
+              : "Modular blocks to build your custom interface."}
+          </p>
+        </div>
+
+        {/* --- TABS CONTENT --- */}
+
+        {activeTab === "demos" ? (
+          /* Bento Grid for Demos */
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 auto-rows-[220px] animate-in slide-in-from-bottom-4 duration-500">
+            {demos.map((demo) => (
+              <div
+                key={demo.id}
+                className={`group relative rounded-[8px] overflow-hidden bg-white border border-slate-200 transition-all duration-500 hover:border-indigo-400 hover:shadow-2xl hover:shadow-indigo-100 cursor-pointer ${demo.span}`}
+              >
+                <div className="absolute inset-0 z-0">
+                  <img
+                    src={demo.img}
+                    alt=""
+                    className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/40 to-transparent z-10"></div>
+                </div>
+                <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between">
+                  <div className="flex justify-between items-start">
+                    <div className="p-3 bg-white rounded-2xl shadow-sm border border-slate-100 group-hover:bg-indigo-600 hover:text-white transition-all">
+                      {demo.icon}
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <h3 className="text-xl font-extrabold text-white">
+                        {demo.title}
+                      </h3>
+                      <p className="text-white text-xs font-semibold mt-1 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                        {demo.desc}
+                      </p>
+                    </div>
+                    <div className="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                      <ArrowUpRight size={18} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Component List View */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-in slide-in-from-bottom-4 duration-500">
+            {components.map((comp) => (
+              <div
+                key={comp.id}
+                className="group p-5 bg-white border border-slate-200 rounded-[8px] flex items-center justify-between hover:border-indigo-400 transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <Box size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800">{comp.name}</h4>
+                    <span className="text-[10px] uppercase tracking-widest font-bold text-slate-400">
+                      {comp.type}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <span className="text-[10px] px-2 py-0.5 bg-emerald-50 text-emerald-600 font-bold rounded-md">
+                    {comp.status}
+                  </span>
+                  <ExternalLink
+                    size={14}
+                    className="text-slate-300 group-hover:text-indigo-600"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Compact Footer */}
+        <footer className="mt-10 p-6 bg-white/60 backdrop-blur-md border border-gray-200 rounded-[32px] flex flex-wrap items-center justify-between gap-4">
+          <div className="flex gap-6">
+            <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
+              <ShieldCheck size={16} /> Secured
+            </div>
+            <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
+              <Zap size={16} /> Fast
+            </div>
+          </div>
+          <p className="text-slate-400 text-xs font-medium">
+            © 2026 Akamify AI Showcase
+          </p>
+        </footer>
       </div>
     </div>
   );

@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { Calendar, Eye, Check, ChevronDown, Clock, Package, Layers, RefreshCw } from "lucide-react";
+import React from "react";
+import {
+  Calendar,
+  Eye,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { gigData } from "../../data/data"; // Ensure this matches your file structure
 import AboutGig2 from "./AboutGig2";
@@ -8,34 +11,8 @@ import PackageComparisonSection from "./PackageComparisonChart";
 const AboutGig = () => {
   const navigate = useNavigate();
 
-  // State for Mobile Tab Selection (0 = Basic, 1 = Standard, 2 = Premium)
-  const [activeMobileTab, setActiveMobileTab] = useState(0);
-
-  // State to track selected delivery option index for each package
-  const [selectedDelivery, setSelectedDelivery] = useState({ 0: 0, 1: 0, 2: 0 });
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const handleSelectPackage = (pkg, index) => {
-    const total = pkg.basePrice + pkg.deliveryOptions[selectedDelivery[index]].additional;
-    console.log(`Selected ${pkg.name} for ${total}`);
-    // navigate('/checkout', { state: { pkg, total } });
-  };
-
-  // Helper to calculate total price dynamically
-  const calculateTotal = (pkg, index) => {
-    return pkg.basePrice + pkg.deliveryOptions[selectedDelivery[index]].additional;
-  };
-
   return (
     <div className="max-w-8xl mx-auto px-0 sm:px-6 lg:px-0 py-8 text-gray-800 font-sans">
-
       {/* --- Header Section --- */}
       <div className="max-w-4xl">
         <AboutGig2 />
@@ -56,13 +33,23 @@ const AboutGig = () => {
             className="w-28 h-28 rounded-full border-4 border-gray-50 p-2 object-cover  transition-transform duration-300 hover:scale-105"
           />
           <div className="text-center md:text-left flex-1">
-            <h4 className="text-2xl font-bold text-gray-900">{gigData.seller.name}</h4>
-            <p className="text-gray-500 mt-1 mb-4">{gigData.seller.about.substring(0, 100)}...</p>
+            <h4 className="text-2xl font-bold text-gray-900">
+              {gigData.seller.name}
+            </h4>
+            <p className="text-gray-500 mt-1 mb-4">
+              {gigData.seller.about.substring(0, 100)}...
+            </p>
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-              <button className="flex items-center gap-2 px-6 py-2.5 border border-gray-900 rounded-lg font-semibold text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 active:scale-95">
+              <button
+                onClick={() => navigate("/contact")}
+                className="flex items-center gap-2 px-6 py-2.5 border border-gray-900 rounded-lg font-semibold text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 active:scale-95"
+              >
                 <Calendar size={18} /> Contact Me
               </button>
-              <button className="flex items-center gap-2 px-6 py-2.5 border border-gray-900 rounded-lg font-semibold text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 active:scale-95">
+              <button
+                onClick={() => navigate("/view-demo")}
+                className="flex items-center gap-2 px-6 py-2.5 border border-gray-900 rounded-lg font-semibold text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 active:scale-95"
+              >
                 <Eye size={18} /> View Demo
               </button>
             </div>
@@ -72,20 +59,37 @@ const AboutGig = () => {
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-left md:text-left">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">From</p>
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+                From
+              </p>
               <p className="font-bold text-gray-900">{gigData.seller.from}</p>
             </div>
             <div className="text-left md:text-left">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Member Since</p>
-              <p className="font-bold text-gray-900">{gigData.seller.memberSince}</p>
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+                Member Since
+              </p>
+              <p className="font-bold text-gray-900">
+                {gigData.seller.memberSince}
+              </p>
             </div>
             <div className="text-left md:text-left">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Avg. Response</p>
-              <p className="font-bold text-gray-900">{gigData.seller.avgResponse}</p>
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+                Avg. Response
+              </p>
+              <p className="font-bold text-gray-900">
+                {gigData.seller.avgResponse}
+              </p>
             </div>
             <div className="text-left md:text-left">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Languages</p>
-              <p className="font-bold text-gray-900 truncate" title={gigData.seller.languages}>{gigData.seller.languages}</p>
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+                Languages
+              </p>
+              <p
+                className="font-bold text-gray-900 truncate"
+                title={gigData.seller.languages}
+              >
+                {gigData.seller.languages}
+              </p>
             </div>
           </div>
           <div className="mt-2 border-t border-gray-200 pt-6">
@@ -95,8 +99,6 @@ const AboutGig = () => {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 };

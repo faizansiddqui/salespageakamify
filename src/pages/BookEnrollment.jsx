@@ -1,59 +1,101 @@
-import React, { useState } from 'react';
-import { Calendar, User, Phone, Mail, Building, Check, AlertCircle, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { db, ref, push, set, get } from '../config/firebase';
-import { sendEmail, emailTemplates } from '../config/emailService';
-import './BookEnrollment.css';
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  Calendar,
+  User,
+  Phone,
+  Mail,
+  Building,
+  Check,
+  AlertCircle,
+  ArrowRight,
+  ChevronDown,
+  ChevronLeft,
+  ChevronUp,
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { db, ref, push, set, get } from "../config/firebase";
+import { sendEmail, emailTemplates } from "../config/emailService";
+import "./BookEnrollment.css";
 
 const BookEnrollment = () => {
+  const planOptions = useMemo(
+    () => [
+      { key: "starter", label: "E-commerce Starter" },
+      { key: "standard", label: "E-commerce Standard" },
+      { key: "enterprises", label: "Pro Multi-Vendor Marketplace" },
+    ],
+    [],
+  );
+
+  const planLabelByKey = useMemo(
+    () =>
+      planOptions.reduce((acc, plan) => {
+        acc[plan.key] = plan.label;
+        return acc;
+      }, {}),
+    [planOptions],
+  );
+
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    business: '',
-    date: '',
-    agreeTerms: false
+    name: "",
+    phone: "",
+    email: "",
+    business: "",
+    planKey: "",
+    date: "",
+    agreeTerms: false,
   });
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const faqs = [
     {
       question: "What is the security deposit for?",
-      answer: "The ₹99 security deposit confirms your booking slot and ensures commitment. This amount is fully refundable after your meeting is completed."
+      answer:
+        "The Rs. 99 security deposit confirms your booking slot and ensures commitment. This amount is fully refundable after your meeting is completed.",
     },
     {
       question: "When will I receive my refund?",
-      answer: "Your security deposit will be refunded within 24 business hours after the meeting is completed."
+      answer:
+        "Your security deposit will be refunded within 24 business hours after the meeting is completed.",
     },
     {
       question: "What payment methods are accepted?",
-      answer: "We accept all major credit cards, debit cards, UPI, and net banking through Razorpay secure payment gateway."
+      answer:
+        "We accept all major credit cards, debit cards, UPI, and net banking through Razorpay secure payment gateway.",
     },
     {
       question: "Can I reschedule my booking?",
-      answer: "Yes, you can reschedule your booking up to 24 hours before the scheduled time by contacting our support team."
+      answer:
+        "Yes, you can reschedule your booking up to 24 hours before the scheduled time by contacting our support team.",
     },
     {
       question: "What happens if payment fails?",
-      answer: "If payment fails, no amount will be deducted. You can retry the payment or choose a different payment method."
-    }
+      answer:
+        "If payment fails, no amount will be deducted. You can retry the payment or choose a different payment method.",
+    },
   ];
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
-    if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = 'Phone must be 10 digits';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-    if (!formData.business.trim()) newErrors.business = 'Business name is required';
-    if (!formData.date) newErrors.date = 'Date is required';
-    if (!formData.agreeTerms) newErrors.agreeTerms = 'You must agree to terms and conditions';
+
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.phone.trim()) newErrors.phone = "Phone is required";
+    if (!/^\d{10}$/.test(formData.phone))
+      newErrors.phone = "Phone must be 10 digits";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email is invalid";
+    if (!formData.business.trim())
+      newErrors.business = "Business name is required";
+    if (!formData.planKey) newErrors.planKey = "Please select a plan";
+    if (!formData.date) newErrors.date = "Date is required";
+    if (!formData.agreeTerms)
+      newErrors.agreeTerms = "You must agree to terms and conditions";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -61,10 +103,18 @@ const BookEnrollment = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
+
+    if (name === "planKey") {
+      try {
+        localStorage.setItem("selectedPlan", value);
+      } catch (error) {
+        console.error("Failed to store selected plan:", error);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -78,18 +128,18 @@ const BookEnrollment = () => {
   const initiatePayment = async () => {
     try {
       // Load Razorpay script
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.async = true;
       document.body.appendChild(script);
 
       script.onload = () => {
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-          amount: 9900, // ₹99 in paise
-          currency: 'INR',
-          name: 'Akamify E-commerce',
-          description: 'Security Deposit for Demo Booking',
+          amount: 9900, // Rs. 99 in paise
+          currency: "INR",
+          name: "Akamify E-commerce",
+          description: "Security Deposit for Demo Booking",
           // Remove image to avoid CORS issues in development
           handler: async function (response) {
             await handlePaymentSuccess(response);
@@ -97,54 +147,87 @@ const BookEnrollment = () => {
           prefill: {
             name: formData.name,
             email: formData.email,
-            contact: formData.phone
+            contact: formData.phone,
           },
           theme: {
-            color: '#667eea'
+            color: "#667eea",
           },
           modal: {
             ondismiss: function () {
               setIsSubmitting(false);
             },
             escape: false,
-            backdropclose: false
-          }
+            backdropclose: false,
+          },
         };
 
         const razorpay = new window.Razorpay(options);
-        
+
         // Add error handling
-        razorpay.on('payment.failed', function (response) {
-          console.error('Payment failed:', response.error);
+        razorpay.on("payment.failed", function (response) {
+          console.error("Payment failed:", response.error);
           try {
-            localStorage.setItem('failedPaymentId', response?.error?.metadata?.payment_id || response?.error?.metadata?.order_id || String(Date.now()));
-            localStorage.setItem('failedBookingData', JSON.stringify({
-              ...formData,
-              status: 'failed',
-              createdAt: new Date().toISOString(),
-              paymentStatus: 'failed'
-            }));
+            localStorage.setItem(
+              "failedPaymentId",
+              response?.error?.metadata?.payment_id ||
+                response?.error?.metadata?.order_id ||
+                String(Date.now()),
+            );
+            localStorage.setItem(
+              "failedBookingData",
+              JSON.stringify({
+                ...formData,
+                status: "failed",
+                createdAt: new Date().toISOString(),
+                paymentStatus: "failed",
+              }),
+            );
           } catch (e) {
-            console.error('Failed to store failed booking context:', e);
+            console.error("Failed to store failed booking context:", e);
           }
           setIsSubmitting(false);
-          navigate('/payment-failed');
+          navigate("/payment-failed");
         });
-        
+
         razorpay.open();
       };
 
       script.onerror = () => {
-        console.error('Failed to load Razorpay script');
+        console.error("Failed to load Razorpay script");
         setIsSubmitting(false);
-        alert('Unable to load payment gateway. Please try again.');
+        alert("Unable to load payment gateway. Please try again.");
       };
     } catch (error) {
-      console.error('Payment initiation error:', error);
+      console.error("Payment initiation error:", error);
       setIsSubmitting(false);
-      alert('Payment failed. Please try again.');
+      alert("Payment failed. Please try again.");
     }
   };
+
+  useEffect(() => {
+    const normalizePlanKey = (value) => {
+      if (!value) return "";
+      const key = value.toLowerCase();
+      if (key === "enterprise") return "enterprises";
+      return key;
+    };
+
+    const params = new URLSearchParams(location.search);
+    const planFromUrl = normalizePlanKey(params.get("plan"));
+    const storedPlan = normalizePlanKey(localStorage.getItem("selectedPlan"));
+    const resolvedPlan = planLabelByKey[planFromUrl]
+      ? planFromUrl
+      : planLabelByKey[storedPlan]
+      ? storedPlan
+      : "";
+
+    if (resolvedPlan) {
+      setFormData((prev) => ({
+        ...prev,
+        planKey: resolvedPlan,
+      }));
+    }
+  }, [location.search, planLabelByKey]);
 
   const handlePaymentSuccess = async (response) => {
     try {
@@ -154,59 +237,81 @@ const BookEnrollment = () => {
       // Save booking data to Realtime Database
       const bookingData = {
         ...formData,
+        planName: planLabelByKey[formData.planKey] || formData.planKey || "N/A",
         transactionId: response.razorpay_payment_id,
         amount: 99,
-        status: 'confirmed',
+        status: "confirmed",
         createdAt: new Date().toISOString(),
-        paymentStatus: 'captured'
+        paymentStatus: "captured",
       };
-      
+
       try {
         // Create a new reference in the 'bookings' node
-        const bookingsRef = ref(db, 'bookings');
-        
+        const bookingsRef = ref(db, "bookings");
+
         const newBookingRef = push(bookingsRef);
-        
+
         await set(newBookingRef, bookingData);
-        
+
         // Verify it was saved by trying to read it back
         const savedRef = ref(db, `bookings/${newBookingRef.key}`);
         const snapshot = await get(savedRef);
-        
       } catch (firebaseError) {
-        console.error('❌ Firebase save error:', firebaseError);
-        console.error('Error code:', firebaseError.code);
-        console.error('Error message:', firebaseError.message);
+        console.error("Firebase save error:", firebaseError);
+        console.error("Error code:", firebaseError.code);
+        console.error("Error message:", firebaseError.message);
         // Continue even if Firebase fails
       }
-      
+
       // Store data in localStorage for success page
-      localStorage.setItem('bookingData', JSON.stringify(bookingData));
-      localStorage.setItem('transactionId', response.razorpay_payment_id);
-      
+      localStorage.setItem("bookingData", JSON.stringify(bookingData));
+      localStorage.setItem("transactionId", response.razorpay_payment_id);
+
+      // Send confirmation email (best effort)
+      if (bookingData.email) {
+        try {
+          const emailTemplate = emailTemplates.bookingConfirmation(bookingData);
+          await sendEmail(
+            bookingData.email,
+            emailTemplate.subject,
+            emailTemplate,
+          );
+          localStorage.setItem(
+            `emailSent_success_${bookingData.transactionId}`,
+            "true",
+          );
+        } catch (emailError) {
+          console.error("Error sending booking email:", emailError);
+        }
+      }
+
       // Redirect immediately
-      navigate(`/payment-success?transaction_id=${response.razorpay_payment_id}`);
-      
+      navigate(
+        `/payment-success?transaction_id=${response.razorpay_payment_id}`,
+      );
     } catch (error) {
-      console.error('❌ Payment success handling error:', error);
-      console.error('Error stack:', error.stack);
+      console.error("Payment success handling error:", error);
+      console.error("Error stack:", error.stack);
       setIsSubmitting(false);
-      
+
       // Store failed payment info for debugging
-      localStorage.setItem('failedPayment', JSON.stringify({
-        error: error.message,
-        response: response,
-        timestamp: new Date().toISOString()
-      }));
-      
-      navigate('/payment-failed');
+      localStorage.setItem(
+        "failedPayment",
+        JSON.stringify({
+          error: error.message,
+          response: response,
+          timestamp: new Date().toISOString(),
+        }),
+      );
+
+      navigate("/payment-failed");
     }
   };
 
   const getMinDate = () => {
     const today = new Date();
     today.setDate(today.getDate() + 1);
-    return today.toISOString().split('T')[0];
+    return today.toISOString().split("T")[0];
   };
 
   const toggleFaq = (index) => {
@@ -216,6 +321,16 @@ const BookEnrollment = () => {
   return (
     <div className="book-enrollment-page">
       <div className="enrollment-container">
+        <button
+          onClick={() => window.history.back()}
+          className="group flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-[8px] text-sm font-bold text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-all active:scale-95"
+        >
+          <ChevronLeft
+            size={18}
+            className="group-hover:-translate-x-1 transition-transform"
+          />
+          Back
+        </button>
         <div className="enrollment-header">
           <h1>Book Your Enrollment Slot</h1>
           <p>Schedule your personalized demo session with our experts</p>
@@ -235,10 +350,12 @@ const BookEnrollment = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={errors.name ? 'error' : ''}
+                  className={errors.name ? "error" : ""}
                   placeholder="Enter your full name"
                 />
-                {errors.name && <span className="error-message">{errors.name}</span>}
+                {errors.name && (
+                  <span className="error-message">{errors.name}</span>
+                )}
               </div>
 
               <div className="form-group">
@@ -252,11 +369,13 @@ const BookEnrollment = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className={errors.phone ? 'error' : ''}
+                  className={errors.phone ? "error" : ""}
                   placeholder="Enter your 10-digit phone number"
                   maxLength="10"
                 />
-                {errors.phone && <span className="error-message">{errors.phone}</span>}
+                {errors.phone && (
+                  <span className="error-message">{errors.phone}</span>
+                )}
               </div>
 
               <div className="form-group">
@@ -270,10 +389,12 @@ const BookEnrollment = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={errors.email ? 'error' : ''}
+                  className={errors.email ? "error" : ""}
                   placeholder="Enter your email address"
                 />
-                {errors.email && <span className="error-message">{errors.email}</span>}
+                {errors.email && (
+                  <span className="error-message">{errors.email}</span>
+                )}
               </div>
 
               <div className="form-group">
@@ -287,10 +408,36 @@ const BookEnrollment = () => {
                   name="business"
                   value={formData.business}
                   onChange={handleInputChange}
-                  className={errors.business ? 'error' : ''}
+                  className={errors.business ? "error" : ""}
                   placeholder="Enter your business name"
                 />
-                {errors.business && <span className="error-message">{errors.business}</span>}
+                {errors.business && (
+                  <span className="error-message">{errors.business}</span>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="planKey">
+                  <Check size={18} />
+                  Select Plan *
+                </label>
+                <select
+                  id="planKey"
+                  name="planKey"
+                  value={formData.planKey}
+                  onChange={handleInputChange}
+                  className={errors.planKey ? "error" : ""}
+                >
+                  <option value="">Choose a plan</option>
+                  {planOptions.map((plan) => (
+                    <option key={plan.key} value={plan.key}>
+                      {plan.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.planKey && (
+                  <span className="error-message">{errors.planKey}</span>
+                )}
               </div>
 
               <div className="form-group">
@@ -304,11 +451,13 @@ const BookEnrollment = () => {
                   name="date"
                   value={formData.date}
                   onChange={handleInputChange}
-                  className={errors.date ? 'error' : ''}
+                  className={errors.date ? "error" : ""}
                   min={getMinDate()}
-                  style={{ color: '#757575' }}
+                  style={{ color: "#757575" }}
                 />
-                {errors.date && <span className="error-message">{errors.date}</span>}
+                {errors.date && (
+                  <span className="error-message">{errors.date}</span>
+                )}
               </div>
 
               <div className="terms-section">
@@ -318,20 +467,23 @@ const BookEnrollment = () => {
                     name="agreeTerms"
                     checked={formData.agreeTerms}
                     onChange={handleInputChange}
-                    className={errors.agreeTerms ? 'error' : ''}
+                    className={errors.agreeTerms ? "error" : ""}
                   />
                   <span className="checkmark">
                     <Check size={14} />
                   </span>
-                  I agree to the terms and conditions and understand the refund policy
+                  I agree to the terms and conditions and understand the refund
+                  policy
                 </label>
-                {errors.agreeTerms && <span className="error-message">{errors.agreeTerms}</span>}
+                {errors.agreeTerms && (
+                  <span className="error-message">{errors.agreeTerms}</span>
+                )}
               </div>
 
               <div className="security-info">
                 <div className="security-amount">
                   <span className="amount-label">Security Deposit:</span>
-                  <span className="amount">₹99</span>
+                  <span className="amount">Rs. 99</span>
                 </div>
                 <div className="refund-info-book">
                   <AlertCircle size={16} />
@@ -339,8 +491,12 @@ const BookEnrollment = () => {
                 </div>
               </div>
 
-              <button type="submit" className="proceed-btn" disabled={isSubmitting}>
-                {isSubmitting ? 'Processing...' : 'Proceed to Payment'}
+              <button
+                type="submit"
+                className="proceed-btn"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Processing..." : "Proceed to Payment"}
                 <ArrowRight size={18} />
               </button>
             </form>
@@ -361,7 +517,7 @@ const BookEnrollment = () => {
               <h3>What Happens Next?</h3>
               <ol>
                 <li>Complete the booking form</li>
-                <li>Pay ₹99 security deposit</li>
+                <li>Pay Rs. 99 security deposit</li>
                 <li>Receive confirmation email</li>
                 <li>Attend your scheduled demo</li>
                 <li>Get refund within 24 hours</li>
@@ -375,16 +531,19 @@ const BookEnrollment = () => {
           <div className="faq-list">
             {faqs.map((faq, index) => (
               <div key={index} className="faq-item">
-                <div 
-                  className="faq-question"
-                  onClick={() => toggleFaq(index)}
-                >
+                <div className="faq-question" onClick={() => toggleFaq(index)}>
                   <h4>{faq.question}</h4>
                   <span className="faq-icon">
-                    {expandedFaq === index ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    {expandedFaq === index ? (
+                      <ChevronUp size={20} />
+                    ) : (
+                      <ChevronDown size={20} />
+                    )}
                   </span>
                 </div>
-                <div className={`faq-answer ${expandedFaq === index ? 'expanded' : ''}`}>
+                <div
+                  className={`faq-answer ${expandedFaq === index ? "expanded" : ""}`}
+                >
                   <p>{faq.answer}</p>
                 </div>
               </div>
