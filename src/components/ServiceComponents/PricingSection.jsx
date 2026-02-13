@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Clock,
   RotateCcw,
@@ -32,9 +32,8 @@ const PricingSection = ({
     email: "",
     phone: "",
     business: "",
-    extraPages: 0,
     deliveryOptionIndex: 0,
-    notes: "",
+    customFunctionality: "",
     acceptTerms: false,
   });
 
@@ -119,7 +118,6 @@ const PricingSection = ({
   useEffect(() => {
     setPurchaseForm((prev) => ({
       ...prev,
-      extraPages: 0,
       deliveryOptionIndex: 0,
       acceptTerms: false,
     }));
@@ -156,18 +154,12 @@ const PricingSection = ({
     return undefined;
   }, [onPackageSelect]);
 
-  const extraPages = useMemo(() => {
-    const value = Number(purchaseForm.extraPages);
-    return Number.isFinite(value) && value > 0 ? Math.floor(value) : 0;
-  }, [purchaseForm.extraPages]);
-
   const deliveryOption =
     currentPlanConfig.deliveryOptions[purchaseForm.deliveryOptionIndex] ||
     currentPlanConfig.deliveryOptions[0];
   const deliveryAddOn = deliveryOption?.additional || 0;
-  const pageAddOnCost = extraPages * 1000;
   const basePrice = price[selectedPackage] || 0;
-  const totalPrice = basePrice + deliveryAddOn + pageAddOnCost;
+  const totalPrice = basePrice + deliveryAddOn;
   const formatCurrency = (value) =>
     `Rs. ${Number(value || 0).toLocaleString("en-IN")}`;
 
@@ -195,12 +187,7 @@ const PricingSection = ({
     const { name, value, type, checked } = e.target;
     setPurchaseForm((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : name === "extraPages"
-          ? value.replace(/[^\d]/g, "")
-          : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -248,13 +235,11 @@ const PricingSection = ({
       email: purchaseForm.email.trim(),
       phone: purchaseForm.phone.trim(),
       business: purchaseForm.business.trim(),
-      notes: purchaseForm.notes.trim(),
+      customFunctionality: purchaseForm.customFunctionality.trim(),
       planName: currentDetails?.title || selectedPackage,
       planKey: selectedPackage,
       basePrice,
       basePages: currentPlanConfig.basePages,
-      extraPages,
-      pageAddOnCost,
       deliveryLabel: deliveryOption?.label || "Standard",
       deliveryAddOn,
       total: totalPrice,
@@ -282,6 +267,7 @@ const PricingSection = ({
             paymentId: response?.razorpay_payment_id,
             date: new Date().toISOString(),
             status: "paid",
+            approvalStatus: "pending",
             createdAt: new Date().toISOString(),
           };
 
@@ -513,8 +499,14 @@ const PricingSection = ({
 
       {isPurchaseOpen && typeof document !== "undefined"
         ? createPortal(
-            <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-              <div className="w-full max-w-2xl rounded-[8px] bg-white border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+            <div
+              className="fixed inset-0 z-[2147483647] bg-slate-900/50 backdrop-blur-sm"
+              onClick={handlePurchaseClose}
+            >
+              <div
+                className="fixed right-0 top-0 h-full w-full max-w-[520px] bg-white border-l border-slate-200 overflow-hidden flex flex-col shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {/* Header: Clean & Balanced */}
                 <div className="flex items-center justify-between border-b border-slate-100 px-8 py-6 bg-white">
                   <div className="space-y-1">
@@ -641,19 +633,6 @@ const PricingSection = ({
                           )}
                         </select>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-wide text-slate-700 text-indigo-600">
-                          Extra Pages (Rs. 1000/page)
-                        </label>
-                        <input
-                          type="number"
-                          name="extraPages"
-                          min="0"
-                          value={purchaseForm.extraPages}
-                          onChange={handlePurchaseChange}
-                          className="w-full rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold transition-all focus:bg-white focus:border-indigo-600 focus:ring-0 outline-none"
-                        />
-                      </div>
                     </div>
 
                     {/* Modern Pricing Summary */}
@@ -663,10 +642,8 @@ const PricingSection = ({
                         <span>{formatCurrency(basePrice)}</span>
                       </div>
                       <div className="flex items-center justify-between text-xs font-medium text-slate-400">
-                        <span>Add-ons (Delivery + Pages)</span>
-                        <span>
-                          {formatCurrency(deliveryAddOn + pageAddOnCost)}
-                        </span>
+                        <span>Add-ons (Delivery)</span>
+                        <span>{formatCurrency(deliveryAddOn)}</span>
                       </div>
                       <div className="flex items-center justify-between border-t border-slate-700 pt-3">
                         <span className="text-sm font-bold uppercase tracking-widest text-indigo-400">
@@ -678,17 +655,17 @@ const PricingSection = ({
                       </div>
                     </div>
 
-                    {/* Notes Section */}
+                    {/* Custom Functionality */}
                     <div className="space-y-2 pt-4">
                       <label className="text-xs font-bold uppercase tracking-wide text-slate-700">
-                        Specific Requirements
+                        Custom Functionality
                       </label>
                       <textarea
-                        name="notes"
-                        value={purchaseForm.notes}
+                        name="customFunctionality"
+                        value={purchaseForm.customFunctionality}
                         onChange={handlePurchaseChange}
                         className="w-full rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium transition-all focus:bg-white focus:border-indigo-600 focus:ring-0 outline-none min-h-[100px]"
-                        placeholder="Tell us more about your project goals..."
+                        placeholder="Describe any custom functionality you need..."
                       />
                     </div>
 

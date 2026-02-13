@@ -411,6 +411,12 @@
   min-width: 80px;
 }
 
+.plan-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .view-btn {
   background: #3498db;
   color: white;
@@ -582,6 +588,62 @@
 
 .download-btn:hover {
   background: #111827;
+}
+
+.approve-btn,
+.reject-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  width: 180px;
+  justify-content: center;
+}
+
+.approve-btn {
+  background: #16a34a;
+}
+
+.approve-btn:hover:not(:disabled) {
+  background: #15803d;
+  transform: translateY(-2px);
+}
+
+.reject-btn {
+  background: #dc2626;
+}
+
+.reject-btn:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.approve-btn:disabled,
+.reject-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.modal .download-btn {
+  width: 180px;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .approve-btn,
+  .reject-btn,
+  .modal .download-btn {
+    width: 100%;
+  }
 }
 
 /* Refresh Button */

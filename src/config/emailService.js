@@ -29,9 +29,6 @@ const emailTemplates = {
                 <strong>Pages Included:</strong> ${purchaseData?.basePages ?? "N/A"}
               </div>
               <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
-                <strong>Extra Pages:</strong> ${purchaseData?.extraPages ?? 0} (${formatCurrency(purchaseData?.pageAddOnCost)} add-on)
-              </div>
-              <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
                 <strong>Delivery:</strong> ${purchaseData?.deliveryLabel || "Standard"} (${formatCurrency(purchaseData?.deliveryAddOn)})
               </div>
               <div style="padding: 14px; background: #ecfeff; border-radius: 8px; border-left: 4px solid #06b6d4;">
@@ -45,7 +42,7 @@ const emailTemplates = {
               <div><strong>Email:</strong> ${purchaseData?.email || "N/A"}</div>
               <div><strong>Phone:</strong> ${purchaseData?.phone || "N/A"}</div>
               <div><strong>Business:</strong> ${purchaseData?.business || "N/A"}</div>
-              <div><strong>Notes:</strong> ${purchaseData?.notes || "N/A"}</div>
+              <div><strong>Custom Functionality:</strong> ${purchaseData?.customFunctionality || "N/A"}</div>
             </div>
 
             <div style="margin-top: 24px; padding: 16px; background: #fef9c3; border-radius: 8px; border-left: 4px solid #f59e0b;">
@@ -79,10 +76,9 @@ const emailTemplates = {
             <p><strong>Business:</strong> ${purchaseData?.business || "N/A"}</p>
             <p><strong>Plan:</strong> ${purchaseData?.planName || "N/A"}</p>
             <p><strong>Base Price:</strong> ${formatCurrency(purchaseData?.basePrice)}</p>
-            <p><strong>Extra Pages:</strong> ${purchaseData?.extraPages ?? 0} (${formatCurrency(purchaseData?.pageAddOnCost)})</p>
             <p><strong>Delivery:</strong> ${purchaseData?.deliveryLabel || "Standard"} (${formatCurrency(purchaseData?.deliveryAddOn)})</p>
             <p><strong>Total:</strong> ${formatCurrency(purchaseData?.total)}</p>
-            <p><strong>Notes:</strong> ${purchaseData?.notes || "N/A"}</p>
+            <p><strong>Custom Functionality:</strong> ${purchaseData?.customFunctionality || "N/A"}</p>
           </div>
         </div>
       `,
@@ -108,13 +104,13 @@ const emailTemplates = {
             <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;" />
             <p><strong>Plan:</strong> ${invoiceData?.planName || "N/A"}</p>
             <p><strong>Base Price:</strong> ${formatCurrency(invoiceData?.basePrice)}</p>
-            <p><strong>Extra Pages:</strong> ${invoiceData?.extraPages ?? 0} (${formatCurrency(invoiceData?.pageAddOnCost)})</p>
             <p><strong>Delivery Add-on:</strong> ${invoiceData?.deliveryLabel || "Standard"} (${formatCurrency(invoiceData?.deliveryAddOn)})</p>
             <p style="font-size: 16px; font-weight: 700; margin-top: 12px;">Total: ${formatCurrency(invoiceData?.total)}</p>
             <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;" />
             <p><strong>Customer:</strong> ${invoiceData?.name || "N/A"}</p>
             <p><strong>Email:</strong> ${invoiceData?.email || "N/A"}</p>
             <p><strong>Phone:</strong> ${invoiceData?.phone || "N/A"}</p>
+            <p><strong>Custom Functionality:</strong> ${invoiceData?.customFunctionality || "N/A"}</p>
           </div>
           <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 12px;">
             Invoice PDF is attached with this email.
@@ -140,7 +136,40 @@ const emailTemplates = {
             <p><strong>Payment ID:</strong> ${invoiceData?.paymentId || "N/A"}</p>
             <p><strong>Plan:</strong> ${invoiceData?.planName || "N/A"}</p>
             <p><strong>Total:</strong> ${formatCurrency(invoiceData?.total)}</p>
+            <p><strong>Custom Functionality:</strong> ${invoiceData?.customFunctionality || "N/A"}</p>
             <p><strong>Customer:</strong> ${invoiceData?.name || "N/A"} (${invoiceData?.email || "N/A"})</p>
+          </div>
+        </div>
+      `,
+    };
+  },
+  planApprovalStatus: (purchaseData) => {
+    const status = (purchaseData?.approvalStatus || "pending").toLowerCase();
+    const isApproved = status === "approved";
+    const headline = isApproved ? "Approved" : "Rejected";
+    const highlightColor = isApproved ? "#16a34a" : "#dc2626";
+
+    return {
+      subject: `Plan Request ${headline} - ${purchaseData?.planName || "Selected Plan"}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 16px;">
+          <div style="background: ${highlightColor}; color: white; padding: 24px; text-align: center; border-radius: 12px 12px 0 0;">
+            <h1 style="margin: 0; font-size: 1.6rem;">Plan Request ${headline}</h1>
+            <p style="margin: 8px 0 0 0; opacity: 0.9;">
+              ${isApproved ? "Great news! Your custom plan request has been approved." : "We reviewed your request and cannot proceed with it at this time."}
+            </p>
+          </div>
+          <div style="background: white; padding: 24px; border: 1px solid #e5e7eb; border-radius: 0 0 12px 12px;">
+            <p><strong>Name:</strong> ${purchaseData?.name || "N/A"}</p>
+            <p><strong>Plan:</strong> ${purchaseData?.planName || "N/A"}</p>
+            <p><strong>Custom Functionality:</strong> ${purchaseData?.customFunctionality || "N/A"}</p>
+            <p><strong>Approval Status:</strong> ${headline}</p>
+            <p style="margin-top: 18px; color: #6b7280; font-size: 0.95rem;">
+              ${isApproved ? "Our team will reach out shortly with the next steps and timeline." : "If you want to modify your request, feel free to submit a new one."}
+            </p>
+          </div>
+          <div style="text-align: center; margin-top: 16px; color: #9ca3af; font-size: 0.9rem;">
+            <p>This is an automated email. Please do not reply directly.</p>
           </div>
         </div>
       `,

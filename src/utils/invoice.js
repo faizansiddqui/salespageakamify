@@ -52,17 +52,15 @@ export const buildInvoiceDoc = (invoice) => {
   doc.text(`Base Price: ${formatCurrency(invoice?.basePrice)}`, marginX, cursorY);
   cursorY += 14;
   doc.text(
-    `Extra Pages: ${invoice?.extraPages ?? 0} (${formatCurrency(
-      invoice?.pageAddOnCost
+    `Delivery Add-on: ${invoice?.deliveryLabel || "Standard"} (${formatCurrency(
+      invoice?.deliveryAddOn
     )})`,
     marginX,
     cursorY
   );
   cursorY += 14;
   doc.text(
-    `Delivery Add-on: ${invoice?.deliveryLabel || "Standard"} (${formatCurrency(
-      invoice?.deliveryAddOn
-    )})`,
+    `Custom Functionality: ${invoice?.customFunctionality || "N/A"}`,
     marginX,
     cursorY
   );
